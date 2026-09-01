@@ -2,23 +2,14 @@
  * Résultats de football depuis football-data.org (palier gratuit).
  *   npm run ingest:football -- PL FL1 PD
  */
+import "./load-env.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Match } from "../src/lib/sports/dixon-coles.js";
+import { COMPETITIONS } from "./competitions.js";
 
 const TOKEN = process.env.FOOTBALL_DATA_TOKEN;
 const BASE = "https://api.football-data.org/v4";
-
-export const COMPETITIONS: Record<string, string> = {
-  PL: "Premier League",
-  FL1: "Ligue 1",
-  PD: "La Liga",
-  SA: "Serie A",
-  BL1: "Bundesliga",
-  DED: "Eredivisie",
-  PPL: "Primeira Liga",
-  CL: "Ligue des champions",
-};
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

@@ -12,10 +12,12 @@
     "ingest:football": "tsx scripts/ingest-football.ts",
     "ingest:nba": "tsx scripts/ingest-nba.ts",
     "ingest:all": "npm run ingest:fdj && npm run ingest:football && npm run ingest:nba && npm run ingest:fixtures",
+    "ingest:results": "npm run ingest:football && npm run ingest:nba",
+    "ingest:market": "npm run ingest:fixtures && npm run ingest:odds",
     "validate": "tsx scripts/validate.ts",
     "ingest:fixtures": "tsx scripts/ingest-fixtures.ts",
     "ingest:odds": "tsx scripts/ingest-odds.ts",
-    "ingest:daily": "npm run ingest:fixtures && npm run ingest:odds"
+    "ingest:daily": "npm run ingest:market"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",

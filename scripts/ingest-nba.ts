@@ -2,6 +2,7 @@
  * Résultats NBA depuis balldontlie (palier gratuit, 5 requêtes/min).
  *   npm run ingest:nba
  */
+import "./load-env.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Game } from "../src/lib/sports/elo-nba.js";

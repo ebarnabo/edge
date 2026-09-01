@@ -1,0 +1,82 @@
+# Met à jour les JSON dans /data, commit, push → Netlify redéploie.
+# Heures en UTC. Lancer à la main : Actions → ingest → Run workflow.
+name: ingest
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # FDJ (tirages de la veille)
+    - cron: "0 7 * * *" # calendrier + cotes
+    - cron: "0 8 * * *" # résultats foot + NBA
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Jeu de données à importer"
+        type: choice
+        options: [fdj, market, results, all]
+        default: all
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - id: pick
+        name: Choisir le jeu de données
+        run: |
+          TARGET="${{ github.event.inputs.target }}"
+          SCHEDULE="${{ github.event.schedule }}"
+          if [ -z "$TARGET" ]; then
+            case "$SCHEDULE" in
+              "0 6 * * *") TARGET=fdj ;;
+              "0 7 * * *") TARGET=market ;;
+              "0 8 * * *") TARGET=results ;;
+              *) TARGET=all ;;
+            esac
+          fi
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "Import : $TARGET"
+
+      - name: Importer
+        env:
+          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
+          BALLDONTLIE_KEY: ${{ secrets.BALLDONTLIE_KEY }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          ODDS_REGIONS: ${{ secrets.ODDS_REGIONS }}
+        run: |
+          case "${{ steps.pick.outputs.target }}" in
+            fdj) npm run ingest:fdj ;;
+            market) npm run ingest:market ;;
+            results) npm run ingest:results ;;
+            all) npm run ingest:all && npm run ingest:odds ;;
+            *) echo "Cible inconnue" && exit 1 ;;
+          esac
+
+      - name: Enregistrer les données
+        env:
+          TARGET: ${{ steps.pick.outputs.target }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "Aucune donnée nouvelle"
+          else
+            git commit -m "chore: mise à jour des données (${TARGET})"
+            git push
+          fi

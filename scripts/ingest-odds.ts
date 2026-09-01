@@ -5,13 +5,14 @@
  * Palier gratuit limité : chaque compétition et chaque région consomment une
  * requête. Le script n'appelle que les compétitions présentes dans /data.
  */
+import "./load-env.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { MarketEvent } from "../src/lib/sports/odds.js";
 import { availableCompetitions } from "../src/lib/data.js";
 
 const KEY = process.env.ODDS_API_KEY;
-const REGIONS = process.env.ODDS_REGIONS ?? "eu,uk";
+const REGIONS = process.env.ODDS_REGIONS || "eu,uk";
 const BASE = "https://api.the-odds-api.com/v4/sports";
 
 /** Correspondance entre codes football-data et clés The Odds API. */

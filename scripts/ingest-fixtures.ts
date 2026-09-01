@@ -3,9 +3,10 @@
  *   npm run ingest:fixtures
  *   npm run ingest:fixtures -- FL1 PL
  */
+import "./load-env.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { COMPETITIONS } from "./ingest-football.js";
+import { COMPETITIONS } from "./competitions.js";
 
 const FOOTBALL = process.env.FOOTBALL_DATA_TOKEN;
 const NBA = process.env.BALLDONTLIE_KEY;

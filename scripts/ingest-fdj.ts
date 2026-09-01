@@ -5,6 +5,7 @@
  *   npm run ingest:fdj
  *   npm run ingest:fdj -- loto euromillions
  */
+import "./load-env.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import { Buffer } from "node:buffer";
 import path from "node:path";
