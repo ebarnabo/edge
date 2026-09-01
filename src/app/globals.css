@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-base: oklch(0.168 0.019 264);
+  --color-surface: oklch(0.213 0.022 264);
+  --color-raised: oklch(0.256 0.024 264);
+  --color-line: oklch(0.318 0.021 264);
+  --color-ink: oklch(0.964 0.006 264);
+  --color-muted: oklch(0.688 0.021 264);
+  --color-faint: oklch(0.512 0.019 264);
+
+  --color-loto: oklch(0.812 0.142 79);
+  --color-euro: oklch(0.727 0.128 274);
+  --color-dream: oklch(0.742 0.124 328);
+  --color-edge: oklch(0.769 0.117 172);
+  --color-warn: oklch(0.672 0.186 24);
+
+  --radius-card: 28px;
+  --radius-pill: 999px;
+
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --loto: var(--color-loto);
+  --euro: var(--color-euro);
+  --dream: var(--color-dream);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 78% -12%, oklch(0.28 0.05 268 / 0.55), transparent 62%),
+    radial-gradient(900px 520px at 4% 104%, oklch(0.26 0.045 172 / 0.32), transparent 58%),
+    var(--color-base);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Les chiffres sont le contenu principal : chasse fixe pour comparer d'un coup d'œil. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-edge);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-raised);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
