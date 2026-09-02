@@ -10,15 +10,15 @@ const button = cva(
   {
     variants: {
       variant: {
-        solid: "bg-ink text-base hover:bg-ink/88",
-        edge: "bg-edge text-base hover:bg-edge/88",
-        outline: "border border-line bg-transparent text-ink hover:bg-raised",
+        solid: "bg-ink text-base hover:bg-ink/90",
+        edge: "bg-edge text-base hover:bg-edge/90",
+        outline: "border border-line bg-raised text-ink hover:border-line hover:bg-subtle",
         ghost: "text-muted hover:bg-raised hover:text-ink",
       },
       size: {
         sm: "h-8 px-4 text-xs",
         md: "h-11 px-6 text-sm",
-        lg: "h-14 px-8 text-base",
+        lg: "h-12 px-7 text-sm",
         icon: "size-11",
       },
     },

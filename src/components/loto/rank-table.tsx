@@ -13,22 +13,19 @@ export function RankTable({ game }: { game: GameConfig }) {
         <CardTitle>Probabilités exactes par rang</CardTitle>
         <CardDescription>
           Calculées par loi hypergéométrique sur les {num(total)} combinaisons possibles. Ces
-          valeurs ne dépendent d&apos;aucun historique : elles sont vraies à chaque tirage.
+          valeurs ne dépendent d&apos;aucun historique.
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
         <ul className="flex flex-col gap-1">
           {ranks.map((r) => (
-            <li
-              key={r.label}
-              className="flex items-center justify-between gap-6 rounded-[18px] px-4 py-3 odd:bg-raised/30"
-            >
-              <span className="text-sm font-semibold">{r.label}</span>
+            <li key={r.label} className="data-row">
+              <span className="text-sm font-semibold text-ink">{r.label}</span>
               <span className="flex items-baseline gap-4">
                 <span className="tnum text-sm text-muted">1 sur {num(Math.round(r.odds))}</span>
                 <span
                   aria-hidden
-                  className="hidden h-1 w-24 overflow-hidden rounded-full bg-line/60 sm:block"
+                  className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-line/50 sm:block"
                 >
                   <span
                     className="block h-full rounded-full bg-loto"

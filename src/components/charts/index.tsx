@@ -15,18 +15,20 @@ import {
   YAxis,
 } from "recharts";
 
-const AXIS = { stroke: "oklch(0.512 0.019 264)", fontSize: 11 };
-const GRID = "oklch(0.318 0.021 264 / 0.5)";
+const AXIS = { stroke: "oklch(0.72 0.016 264)", fontSize: 11 };
+const GRID = "oklch(0.34 0.02 264 / 0.45)";
 
 const TOOLTIP = {
   contentStyle: {
-    background: "oklch(0.213 0.022 264)",
-    border: "1px solid oklch(0.318 0.021 264)",
-    borderRadius: 18,
+    background: "oklch(0.22 0.02 264)",
+    border: "1px solid oklch(0.38 0.02 264)",
+    borderRadius: 12,
     padding: "12px 16px",
-    fontSize: 12,
+    fontSize: 13,
+    color: "oklch(0.97 0.004 264)",
   },
-  labelStyle: { color: "oklch(0.688 0.021 264)", marginBottom: 8 },
+  labelStyle: { color: "oklch(0.78 0.016 264)", marginBottom: 8 },
+  itemStyle: { color: "oklch(0.97 0.004 264)" },
 } as const;
 
 export const SERIES_COLORS = [
@@ -99,7 +101,7 @@ export function TrendChart({
           <Legend
             iconType="plainline"
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "oklch(0.688 0.021 264)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: "oklch(0.78 0.016 264)" }}>{v}</span>}
           />
           {series.map((s, i) => (
             <Line
@@ -147,7 +149,7 @@ export function CalibrationChart({
           <Legend
             iconType="plainline"
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "oklch(0.688 0.021 264)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: "oklch(0.78 0.016 264)" }}>{v}</span>}
           />
           <Line
             type="monotone"
@@ -194,7 +196,7 @@ export function DistributionChart({
           <Tooltip {...TOOLTIP} cursor={{ fill: "oklch(0.256 0.024 264 / 0.5)" }} />
           <Legend
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "oklch(0.688 0.021 264)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: "oklch(0.78 0.016 264)" }}>{v}</span>}
           />
           <Bar dataKey="attendu" fill="oklch(0.318 0.021 264)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
           <Bar dataKey="observé" fill={SERIES_COLORS[1]} radius={[6, 6, 0, 0]} isAnimationActive={false} />

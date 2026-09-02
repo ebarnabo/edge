@@ -3,6 +3,7 @@ import { Predictor } from "@/components/sports/predictor";
 import { ValidationReport } from "@/components/sports/validation-report";
 import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
 import { footballPipeline, nbaPipeline, competitions } from "@/lib/sports/models";
 import { COMPETITION_LABELS } from "@/lib/sports/labels";
 import { num } from "@/lib/utils";
@@ -23,14 +24,11 @@ export default async function SportsPage({
 
   return (
     <div className="flex flex-col gap-10">
-      <header className="flex flex-col gap-3">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Sport</h1>
-        <p className="max-w-[68ch] leading-relaxed text-muted">
-          Contrairement aux tirages, un match porte de l&apos;information. Les modèles apprennent
-          sur les résultats réels, sont validés sur des matchs qu&apos;ils n&apos;ont jamais vus,
-          et ne consultent les cotes qu&apos;après avoir tranché.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="Modèles validés"
+        title="Sport"
+        description="Contrairement aux tirages, un match porte de l'information. Les modèles apprennent sur les résultats réels, sont validés sur des matchs qu'ils n'ont jamais vus, et ne consultent les cotes qu'après avoir tranché."
+      />
 
       <Tabs defaultValue="football">
         <TabsList>
@@ -42,12 +40,12 @@ export default async function SportsPage({
           {football.pipeline ? (
             <>
               <Card>
-                <CardContent className="flex flex-wrap items-center justify-between gap-8">
+                <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
                   <Meta label="Compétition" value={COMPETITION_LABELS[code!] ?? code!} />
                   <Meta label="Matchs appris" value={num(football.pipeline.matches)} />
                   <Meta
-                    label="Avantage du terrain"
-                    value={`×${Math.exp(football.pipeline.dc.homeAdvantage).toFixed(2)} sur les buts`}
+                    label="Avantage terrain"
+                    value={`×${Math.exp(football.pipeline.dc.homeAdvantage).toFixed(2)}`}
                   />
                   <Meta label="Correction ρ" value={football.pipeline.dc.rho.toFixed(3)} />
                   <Meta label="Dernier match" value={football.pipeline.lastDate} />
@@ -76,8 +74,8 @@ export default async function SportsPage({
             />
           ) : (
             <EmptyState
-              title="Aucun résultat de football en local"
-              hint="Ajoute FOOTBALL_DATA_TOKEN dans .env.local (clé gratuite sur football-data.org), puis lance l'import. Trois saisons donnent un ajustement stable et assez de matchs pour valider."
+              title="Aucun résultat de football"
+              hint="Ajoute FOOTBALL_DATA_TOKEN (clé gratuite sur football-data.org), puis lance l'import. Trois saisons donnent un ajustement stable."
               command="npm run ingest:football -- FL1 PL PD"
             />
           )}
@@ -87,7 +85,7 @@ export default async function SportsPage({
           {nba.pipeline ? (
             <>
               <Card>
-                <CardContent className="flex flex-wrap items-center justify-between gap-8">
+                <CardContent className="grid gap-6 sm:grid-cols-3">
                   <Meta label="Matchs appris" value={num(nba.pipeline.games)} />
                   <Meta label="Équipes" value={String(nba.pipeline.teams.length)} />
                   <Meta label="Matchs de test réservés" value={num(nba.pipeline.holdout)} />
@@ -116,8 +114,8 @@ export default async function SportsPage({
             />
           ) : (
             <EmptyState
-              title="Aucun résultat NBA en local"
-              hint="Ajoute BALLDONTLIE_KEY dans .env.local (clé gratuite sur app.balldontlie.io), puis lance l'import. Le palier gratuit plafonne à 5 requêtes par minute."
+              title="Aucun résultat NBA"
+              hint="Ajoute BALLDONTLIE_KEY (clé gratuite sur app.balldontlie.io), puis lance l'import."
               command="npm run ingest:nba"
             />
           )}
@@ -129,9 +127,9 @@ export default async function SportsPage({
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-1">
-      <span className="text-sm text-faint">{label}</span>
-      <span className="tnum font-bold">{value}</span>
+    <div className="flex flex-col gap-1.5">
+      <span className="text-label">{label}</span>
+      <span className="tnum text-lg font-bold text-ink">{value}</span>
     </div>
   );
 }

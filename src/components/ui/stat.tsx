@@ -22,9 +22,9 @@ export function Stat({
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <span className="text-sm text-faint">{label}</span>
+      <span className="text-label">{label}</span>
       <span className={cn("tnum text-3xl font-extrabold tracking-tight", toneClass)}>{value}</span>
-      {hint ? <span className="max-w-[34ch] text-xs leading-relaxed text-muted">{hint}</span> : null}
+      {hint ? <span className="max-w-[34ch] text-sm leading-relaxed text-muted">{hint}</span> : null}
     </div>
   );
 }

@@ -82,7 +82,7 @@ export function Tracker() {
                   inputMode="decimal"
                   value={cap}
                   onChange={(e) => setCap(Number(e.target.value) || 0)}
-                  className="tnum h-11 w-24 rounded-[18px] border border-line/70 bg-raised/50 px-4 font-bold text-ink"
+                  className="tnum h-11 w-24 rounded-[14px] border border-line/60 bg-subtle px-4 font-bold text-ink"
                 />
                 €
               </label>
@@ -127,11 +127,11 @@ export function Tracker() {
           <div className="grid gap-4 sm:grid-cols-4">
             <Field label="Date" type="date" value={draft.date} onChange={(v) => setDraft({ ...draft, date: v })} />
             <label className="flex flex-col gap-3">
-              <span className="text-sm text-muted">Jeu</span>
+              <span className="text-label">Jeu</span>
               <select
                 value={draft.game}
                 onChange={(e) => setDraft({ ...draft, game: e.target.value })}
-                className="h-12 rounded-[18px] border border-line/70 bg-raised/50 px-4 text-sm font-semibold"
+                className="h-12 rounded-[14px] border border-line/60 bg-subtle px-4 text-sm font-semibold text-ink"
               >
                 {GAME_LIST.map((g) => (
                   <option key={g.id} className="bg-surface">
@@ -155,7 +155,7 @@ export function Tracker() {
             {entries.slice(0, 30).map((e, i) => (
               <div
                 key={`${e.date}-${i}`}
-                className="flex items-center justify-between gap-4 rounded-[18px] px-4 py-3 odd:bg-raised/30"
+                className="data-row"
               >
                 <span className="text-sm">
                   <span className="tnum text-faint">
@@ -191,14 +191,14 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-3">
-      <span className="text-sm text-muted">{label}</span>
+      <span className="text-label">{label}</span>
       <input
         type={type}
         inputMode={type === "date" ? undefined : "decimal"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="—"
-        className="tnum h-12 rounded-[18px] border border-line/70 bg-raised/50 px-4 text-sm font-semibold placeholder:text-faint"
+        className="tnum h-12 rounded-[14px] border border-line/60 bg-subtle px-4 text-sm font-semibold text-ink placeholder:text-faint"
       />
     </label>
   );

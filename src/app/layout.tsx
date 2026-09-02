@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#171b24",
+  themeColor: "#1a1f2b",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-dvh">
         <Nav />
         <main className="lg:pl-60 xl:pl-64">
-          <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-[112px] sm:px-6 sm:pt-10 lg:px-8 lg:pb-16">
+          <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-[104px] sm:px-6 sm:pt-10 lg:px-8 lg:pb-14">
             {children}
           </div>
         </main>

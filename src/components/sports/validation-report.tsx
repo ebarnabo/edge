@@ -62,42 +62,36 @@ export function ValidationReport({
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6 pt-6">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px] border-collapse text-sm">
+          <div className="overflow-x-auto rounded-[14px] border border-line/50">
+            <table className="data-table min-w-[600px] px-4">
               <thead>
-                <tr className="text-left text-xs text-faint">
-                  <th className="pb-3 font-medium">Modèle</th>
-                  <th className="pb-3 text-right font-medium">Log-perte</th>
-                  {reports[0]?.rps !== undefined && (
-                    <th className="pb-3 text-right font-medium">RPS</th>
-                  )}
-                  <th className="pb-3 text-right font-medium">Brier</th>
-                  <th className="pb-3 text-right font-medium">Exactitude</th>
-                  <th className="pb-3 text-right font-medium">Erreur calib.</th>
-                  <th className="pb-3 text-right font-medium">Apport</th>
+                <tr>
+                  <th className="px-4">Modèle</th>
+                  <th>Log-perte</th>
+                  {reports[0]?.rps !== undefined && <th>RPS</th>}
+                  <th>Brier</th>
+                  <th>Exactitude</th>
+                  <th>Erreur calib.</th>
+                  <th>Apport</th>
                 </tr>
               </thead>
               <tbody className="tnum">
                 {reports.map((r) => (
-                  <tr key={r.name} className="border-t border-line/50">
-                    <td className="py-3 font-semibold">
+                  <tr key={r.name}>
+                    <td className="px-4 font-semibold text-ink">
                       {r.name}
                       {r === best && (
-                        <Badge tone="edge" className="ml-3">
+                        <Badge tone="edge" className="ml-2">
                           meilleur
                         </Badge>
                       )}
                     </td>
-                    <td className="py-3 text-right text-muted">{r.logLoss.toFixed(4)}</td>
-                    {r.rps !== undefined && (
-                      <td className="py-3 text-right text-muted">{r.rps.toFixed(4)}</td>
-                    )}
-                    <td className="py-3 text-right text-muted">{r.brier.toFixed(4)}</td>
-                    <td className="py-3 text-right text-muted">{pct(r.accuracy)}</td>
-                    <td className="py-3 text-right text-muted">{pct(r.calibrationError, 2)}</td>
-                    <td
-                      className={`py-3 text-right font-bold ${r.skill > 0 ? "text-edge" : "text-warn"}`}
-                    >
+                    <td>{r.logLoss.toFixed(4)}</td>
+                    {r.rps !== undefined && <td>{r.rps.toFixed(4)}</td>}
+                    <td>{r.brier.toFixed(4)}</td>
+                    <td>{pct(r.accuracy)}</td>
+                    <td>{pct(r.calibrationError, 2)}</td>
+                    <td className={`font-bold ${r.skill > 0 ? "text-edge" : "text-warn"}`}>
                       {r.skill > 0 ? "+" : ""}
                       {r.skill.toFixed(2)} %
                     </td>
@@ -136,7 +130,7 @@ export function ValidationReport({
                 label: r.name,
                 color: SERIES_COLORS[i % SERIES_COLORS.length],
               })),
-              { key: baselineName, label: baselineName, color: "oklch(0.512 0.019 264)", dashed: true },
+              { key: baselineName, label: baselineName, color: "oklch(0.62 0.014 264)", dashed: true },
             ]}
             yLabel={trendMetric}
             height={320}
@@ -171,10 +165,10 @@ export function ValidationReport({
             {featureImportance.slice(0, 8).map((f) => (
               <div key={f.name} className="flex flex-col gap-2">
                 <div className="flex items-baseline justify-between gap-4">
-                  <span className="text-sm">{f.name}</span>
-                  <span className="tnum text-xs text-faint">{f.weight.toFixed(3)}</span>
+                  <span className="text-sm font-medium text-ink">{f.name}</span>
+                  <span className="tnum text-xs text-muted">{f.weight.toFixed(3)}</span>
                 </div>
-                <span className="h-1.5 overflow-hidden rounded-full bg-raised">
+                <span className="h-2 overflow-hidden rounded-full bg-subtle">
                   <span
                     className="block h-full rounded-full"
                     style={{

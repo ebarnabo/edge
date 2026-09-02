@@ -7,10 +7,10 @@ const badge = cva(
   {
     variants: {
       tone: {
-        neutral: "bg-raised text-muted",
-        edge: "bg-edge/16 text-edge",
-        warn: "bg-warn/16 text-warn",
-        loto: "bg-loto/16 text-loto",
+        neutral: "border border-line/60 bg-raised text-ink",
+        edge: "border border-edge/30 bg-edge/15 text-edge",
+        warn: "border border-warn/30 bg-warn/15 text-warn",
+        loto: "border border-loto/30 bg-loto/15 text-loto",
       },
     },
     defaultVariants: { tone: "neutral" },

@@ -134,7 +134,7 @@ export function Predictor({ sport, competition, teams }: Props) {
                 {data.byModel.map((m) => (
                   <li
                     key={m.name}
-                    className="flex flex-wrap items-center justify-between gap-4 rounded-[18px] px-4 py-3 odd:bg-raised/30"
+                    className="data-row"
                   >
                     <span className="text-sm font-semibold">{m.name}</span>
                     <span className="tnum flex gap-5 text-sm text-muted">
@@ -227,7 +227,7 @@ export function Predictor({ sport, competition, teams }: Props) {
                   {data.value.map((v) => (
                     <li
                       key={v.label}
-                      className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-line/60 bg-raised/40 px-5 py-4"
+                      className="data-row rounded-[14px] border border-line/50"
                     >
                       <span className="flex items-center gap-3">
                         <Badge
@@ -278,11 +278,11 @@ function Select({
 }) {
   return (
     <label className="flex flex-col gap-3">
-      <span className="text-sm text-muted">{label}</span>
+      <span className="text-label">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 rounded-[18px] border border-line/70 bg-raised/50 px-4 text-sm font-semibold text-ink"
+        className="h-12 rounded-[14px] border border-line/60 bg-subtle px-4 text-sm font-semibold text-ink"
       >
         {options.map((o) => (
           <option key={o} value={o} className="bg-surface">
@@ -305,13 +305,13 @@ function Input({
 }) {
   return (
     <label className="flex flex-col gap-3">
-      <span className="text-sm text-muted">{label}</span>
+      <span className="text-label">{label}</span>
       <input
         inputMode="decimal"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="—"
-        className="tnum h-12 rounded-[18px] border border-line/70 bg-raised/50 px-4 text-sm font-semibold text-ink placeholder:text-faint"
+        className="tnum h-12 rounded-[14px] border border-line/60 bg-subtle px-4 text-sm font-semibold text-ink placeholder:text-faint"
       />
     </label>
   );
