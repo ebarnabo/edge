@@ -57,11 +57,22 @@ export function groupCompetitions(codes: string[]) {
   }));
 }
 
+/** Liste ordonnée des codes compétition (foot + NBA). */
+export function sortedCompetitionCodes(codes: string[]) {
+  const order = Object.keys(COMPETITIONS);
+  return [...codes].sort((a, b) => {
+    const ia = order.indexOf(a);
+    const ib = order.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    if (ia !== -1) return -1;
+    if (ib !== -1) return 1;
+    return a.localeCompare(b, "fr");
+  });
+}
+
 /** Compétition par défaut : Ligue 1 si dispo, sinon la première par ordre alphabétique. */
 export function defaultCompetition(codes: string[]): string | undefined {
   if (!codes.length) return undefined;
   if (codes.includes("FL1")) return "FL1";
-  return [...codes].sort((a, b) =>
-    (COMPETITIONS[a]?.label ?? a).localeCompare(COMPETITIONS[b]?.label ?? b, "fr"),
-  )[0];
+  return sortedCompetitionCodes(codes)[0];
 }

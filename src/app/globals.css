@@ -118,6 +118,171 @@ body {
   color: var(--color-muted);
 }
 
+/* Carousel compétitions */
+.competition-carousel-wrap {
+  position: relative;
+}
+
+.competition-carousel-wrap::before,
+.competition-carousel-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2.5rem;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.competition-carousel-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-surface), transparent);
+}
+
+.competition-carousel-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-surface), transparent);
+}
+
+.competition-carousel-wrap.is-at-start::before,
+.competition-carousel-wrap.is-at-end::after {
+  opacity: 0;
+}
+
+.competition-carousel-track {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.35rem 0.5rem 0.65rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.competition-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.competition-carousel-card {
+  scroll-snap-align: center;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 8.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid oklch(0.34 0.02 264 / 0.55);
+  background: var(--color-subtle);
+  color: var(--color-muted);
+  text-decoration: none;
+  transform: scale(0.96);
+  opacity: 0.72;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease,
+    border-color 0.28s ease,
+    background-color 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+.competition-carousel-card:hover {
+  opacity: 0.92;
+  transform: scale(0.98);
+  border-color: oklch(0.4 0.02 264 / 0.7);
+}
+
+.competition-carousel-card.is-selected {
+  opacity: 1;
+  transform: scale(1);
+  border-color: oklch(0.8 0.12 172 / 0.45);
+  background: oklch(0.8 0.12 172 / 0.1);
+  color: var(--color-ink);
+  box-shadow:
+    0 0 0 1px oklch(0.8 0.12 172 / 0.2),
+    0 12px 32px -16px oklch(0.8 0.12 172 / 0.35);
+}
+
+.competition-carousel-card.is-compact {
+  min-width: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-pill);
+}
+
+.competition-carousel-flag {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.competition-carousel-card.is-compact .competition-carousel-flag {
+  font-size: 1.1rem;
+}
+
+.competition-carousel-sub {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.competition-carousel-card.is-selected .competition-carousel-sub {
+  color: oklch(0.8 0.1 172 / 0.85);
+}
+
+.competition-carousel-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.competition-carousel-card.is-compact .competition-carousel-title {
+  font-size: 0.8125rem;
+}
+
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid oklch(0.34 0.02 264 / 0.6);
+  background: oklch(0.195 0.02 264 / 0.92);
+  color: var(--color-ink);
+  transform: translateY(-50%);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.carousel-nav:hover {
+  background: var(--color-raised);
+  border-color: oklch(0.4 0.02 264 / 0.8);
+}
+
+.carousel-nav-left {
+  left: 0.25rem;
+}
+
+.carousel-nav-right {
+  right: 0.25rem;
+}
+
+.carousel-nav svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-edge);
   outline-offset: 3px;
