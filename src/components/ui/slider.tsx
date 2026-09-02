@@ -13,7 +13,7 @@ export function Slider({ className, ...props }: React.ComponentProps<typeof Slid
       <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-raised">
         <SliderPrimitive.Range className="absolute h-full bg-edge" />
       </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="block size-5 rounded-full border-2 border-base bg-ink shadow-lg transition-transform hover:scale-110" />
+      <SliderPrimitive.Thumb className="block size-5 rounded-full border-2 border-canvas bg-ink shadow-lg transition-transform hover:scale-110" />
     </SliderPrimitive.Root>
   );
 }

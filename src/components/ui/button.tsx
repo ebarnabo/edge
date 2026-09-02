@@ -10,8 +10,8 @@ const button = cva(
   {
     variants: {
       variant: {
-        solid: "bg-ink text-base hover:bg-ink/90",
-        edge: "bg-edge text-base hover:bg-edge/90",
+        solid: "bg-ink text-canvas hover:bg-ink/90",
+        edge: "bg-edge text-canvas hover:bg-edge/90",
         outline: "border border-line bg-raised text-ink hover:border-line hover:bg-subtle",
         ghost: "text-muted hover:bg-raised hover:text-ink",
       },

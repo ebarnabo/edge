@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-base: oklch(0.145 0.018 264);
+  --color-canvas: oklch(0.145 0.018 264);
   --color-surface: oklch(0.195 0.02 264);
   --color-raised: oklch(0.245 0.022 264);
   --color-subtle: oklch(0.215 0.02 264);
@@ -40,7 +40,7 @@ body {
   background:
     radial-gradient(1100px 520px at 80% -8%, oklch(0.26 0.045 268 / 0.4), transparent 60%),
     radial-gradient(800px 480px at 0% 100%, oklch(0.24 0.04 172 / 0.22), transparent 55%),
-    var(--color-base);
+    var(--color-canvas);
   background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);

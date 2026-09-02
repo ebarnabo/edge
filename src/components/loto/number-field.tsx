@@ -45,7 +45,7 @@ export function NumberField({
               "group relative flex aspect-square items-center justify-center rounded-[16px] border transition-[transform,border-color,background-color] duration-150",
               "disabled:cursor-not-allowed disabled:opacity-30",
               isOn
-                ? "border-loto bg-loto text-base"
+                ? "border-loto bg-loto text-canvas"
                 : "border-line/70 bg-raised/50 text-ink hover:not-disabled:-translate-y-0.5 hover:not-disabled:border-line",
             )}
             style={
