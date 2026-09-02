@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { BarChart3, Receipt, Sparkles, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -108,7 +109,10 @@ export function Predictor({ sport, competition, teams, initialHome, initialAway 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Analyser un match</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Target className="size-5 shrink-0 text-accent" aria-hidden />
+          Analyser un match
+        </CardTitle>
         <CardDescription>
           Choisis deux équipes pour obtenir les probabilités estimées par le modèle. Tu peux
           optionnellement ajouter des cotes pour comparer au marché.
@@ -125,9 +129,12 @@ export function Predictor({ sport, competition, teams, initialHome, initialAway 
           <button
             type="button"
             onClick={() => setShowOdds((v) => !v)}
-            className="flex items-center justify-between text-sm font-semibold text-ink"
+            className="flex items-center justify-between gap-2 text-sm font-semibold text-ink"
           >
-            Comparer aux cotes du marché
+            <span className="inline-flex items-center gap-2">
+              <Receipt className="size-4 shrink-0 opacity-70" aria-hidden />
+              Comparer aux cotes du marché
+            </span>
             <Badge tone={showOdds ? "edge" : "neutral"}>{showOdds ? "Activé" : "Optionnel"}</Badge>
           </button>
           {showOdds && (
@@ -159,7 +166,10 @@ export function Predictor({ sport, competition, teams, initialHome, initialAway 
             {/* Verdict principal */}
             {bestValue ? (
               <div className="rounded-[14px] border border-edge/35 bg-edge/8 p-4">
-                <p className="text-sm font-semibold text-edge">Opportunité détectée</p>
+                <p className="flex items-center gap-2 text-sm font-semibold text-edge">
+                  <Sparkles className="size-4 shrink-0" aria-hidden />
+                  Opportunité détectée
+                </p>
                 <p className="mt-2 text-sm leading-relaxed text-ink">
                   Le modèle estime <strong>{displayTeamName(bestValue.label)}</strong> à{" "}
                   <strong>{pct(bestValue.modelProb, 0)}</strong>, le marché à{" "}
@@ -190,7 +200,10 @@ export function Predictor({ sport, competition, teams, initialHome, initialAway 
             {/* Probabilités ou tableau comparatif */}
             {data.value ? (
               <div className="flex flex-col gap-3">
-                <span className="text-label">Modèle vs marché</span>
+                <span className="text-label flex items-center gap-1.5">
+                  <BarChart3 className="size-3.5 opacity-70" aria-hidden />
+                  Modèle vs marché
+                </span>
                 <div className="overflow-x-auto rounded-[14px] border border-line/50">
                   <table className="w-full min-w-[480px] text-sm">
                     <thead>
