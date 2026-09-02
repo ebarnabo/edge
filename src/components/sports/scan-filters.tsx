@@ -1,22 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, List, Target, Sparkles, Receipt, ArrowUpDown, Percent, SlidersHorizontal } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import type { DayFilter, SortMode, ViewFilter } from "@/lib/sports/filter-rows";
 
-const VIEWS: { id: ViewFilter; label: string; hint: string }[] = [
-  { id: "all", label: "Tous", hint: "Tous les matchs" },
-  { id: "faciles", label: "Paris faciles", hint: "Victoire estimée ≥ 60 %" },
-  { id: "value", label: "Opportunités", hint: "Écart modèle > marché" },
-  { id: "cotes", label: "Avec cotes", hint: "Comparaison marché disponible" },
+const VIEWS: { id: ViewFilter; label: string; hint: string; icon: typeof List }[] = [
+  { id: "all", label: "Tous", hint: "Tous les matchs", icon: List },
+  { id: "faciles", label: "Paris faciles", hint: "Victoire estimée ≥ 60 %", icon: Target },
+  { id: "value", label: "Opportunités", hint: "Écart modèle > marché", icon: Sparkles },
+  { id: "cotes", label: "Avec cotes", hint: "Comparaison marché disponible", icon: Receipt },
 ];
 
-const SORTS: { id: SortMode; label: string }[] = [
-  { id: "faciles", label: "Plus probable" },
-  { id: "opportunites", label: "Meilleur écart" },
-  { id: "date", label: "Date" },
+const SORTS: { id: SortMode; label: string; icon: typeof ArrowUpDown }[] = [
+  { id: "faciles", label: "Plus probable", icon: Target },
+  { id: "opportunites", label: "Meilleur écart", icon: Sparkles },
+  { id: "date", label: "Date", icon: ArrowUpDown },
 ];
 
 export interface ScanFilterState {
@@ -53,7 +53,10 @@ export function ScanFilters({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <span className="text-label">Rechercher une équipe</span>
+        <span className="text-label flex items-center gap-1.5">
+          <Search className="size-3.5 opacity-70" aria-hidden />
+          Rechercher une équipe
+        </span>
         <div className="relative">
           <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted" />
           <input
@@ -80,9 +83,14 @@ export function ScanFilters({
       </div>
 
       <div className="flex flex-col gap-3">
-        <span className="text-label">Type de pari</span>
+        <span className="text-label flex items-center gap-1.5">
+          <Target className="size-3.5 opacity-70" aria-hidden />
+          Type de pari
+        </span>
         <div className="flex flex-wrap gap-2">
-          {VIEWS.map((v) => (
+          {VIEWS.map((v) => {
+            const Icon = v.icon;
+            return (
             <button
               key={v.id}
               type="button"
@@ -94,21 +102,26 @@ export function ScanFilters({
                 })
               }
               className={cn(
-                "rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
+                "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
                 state.view === v.id
                   ? "border-accent/30 bg-accent-soft text-accent"
                   : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
               )}
             >
+              <Icon className="size-3.5 shrink-0 opacity-80" aria-hidden />
               {v.label}
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       <div className="flex flex-col gap-3">
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-label">Probabilité minimum</span>
+          <span className="text-label flex items-center gap-1.5">
+            <Percent className="size-3.5 opacity-70" aria-hidden />
+            Probabilité minimum
+          </span>
           <span className="tnum text-sm font-bold text-edge">{Math.round(state.minProb * 100)} %</span>
         </div>
         <Slider
@@ -124,28 +137,36 @@ export function ScanFilters({
       </div>
 
       <div className="flex flex-col gap-3">
-        <span className="text-label">Trier par</span>
+        <span className="text-label flex items-center gap-1.5">
+          <ArrowUpDown className="size-3.5 opacity-70" aria-hidden />
+          Trier par
+        </span>
         <div className="flex flex-wrap gap-2">
-          {SORTS.map((s) => (
+          {SORTS.map((s) => {
+            const Icon = s.icon;
+            return (
             <button
               key={s.id}
               type="button"
               onClick={() => onChange({ sort: s.id })}
               className={cn(
-                "rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
+                "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
                 state.sort === s.id
                   ? "border-accent/30 bg-accent-soft text-accent"
                   : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
               )}
             >
+              <Icon className="size-3.5 shrink-0 opacity-80" aria-hidden />
               {s.label}
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       <details className="border-t border-line/50 pt-4">
-        <summary className="cursor-pointer text-sm font-semibold text-muted hover:text-ink">
+        <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-muted hover:text-ink">
+          <SlidersHorizontal className="size-4 shrink-0 opacity-70" aria-hidden />
           Options avancées (bankroll, seuil d&apos;écart)
         </summary>
         <div className="mt-4 grid gap-6 sm:grid-cols-2">

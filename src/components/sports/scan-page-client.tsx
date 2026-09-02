@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { Stat } from "@/components/ui/stat";
 import { FadeIn } from "@/components/motion/gsap-motion";
+import { Clock, LayoutList, Receipt, Sparkles } from "lucide-react";
 import { applyScanParams, type ScanRowBase } from "@/lib/sports/scan-types";
 import { extractAvailableDates, processScanRows } from "@/lib/sports/filter-rows";
 import { formatFreshness } from "@/lib/sports/display";
@@ -135,14 +136,16 @@ function ScanPageInner({ competitionCodes }: { competitionCodes: string[] }) {
             <ScanFilters state={filters} onChange={patchFilters} />
 
             <div className="grid gap-6 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat label="Matchs affichés" value={loading ? "…" : num(rows.length)} />
-              <Stat label="Avec cotes" value={loading ? "…" : num(withOdds)} />
+              <Stat icon={LayoutList} label="Matchs affichés" value={loading ? "…" : num(rows.length)} />
+              <Stat icon={Receipt} label="Avec cotes" value={loading ? "…" : num(withOdds)} />
               <Stat
+                icon={Sparkles}
                 label="Opportunités"
                 value={loading ? "…" : num(opportunities)}
                 tone={opportunities > 0 ? "accent" : "default"}
               />
               <Stat
+                icon={Clock}
                 label="Données"
                 value={loading ? "…" : meta?.fromCache ? "Prêtes" : "Calculées"}
                 hint={

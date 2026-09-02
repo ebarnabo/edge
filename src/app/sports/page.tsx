@@ -1,7 +1,10 @@
 import { Suspense } from "react";
+import type { LucideIcon } from "lucide-react";
+import { Calendar, Database, Home, LineChart, Users } from "lucide-react";
 import { Predictor } from "@/components/sports/predictor";
 import { ValidationReport } from "@/components/sports/validation-report";
 import { CompetitionPicker } from "@/components/sports/competition-picker";
+import { CompetitionLogo } from "@/components/sports/competition-logo";
 import { SportTabs } from "@/components/sports/sport-tabs";
 import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,7 +41,10 @@ export default async function SportsPage({
 
       <Card>
         <CardContent className="flex flex-col gap-3 text-sm leading-relaxed text-muted">
-          <p className="font-semibold text-ink">Deux outils complémentaires</p>
+          <p className="flex items-center gap-2 font-semibold text-ink">
+            <LineChart className="size-4 shrink-0 text-accent" aria-hidden />
+            Deux outils complémentaires
+          </p>
           <ul className="flex list-disc flex-col gap-1.5 pl-5">
             <li>
               <strong className="text-ink">Analyser un match</strong> — choisis deux équipes et
@@ -67,20 +73,27 @@ export default async function SportsPage({
                 <Card>
                   <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <Meta
+                      icon={Database}
                       label="Championnat"
                       value={
-                        competition
-                          ? `${competition.flag} ${competition.label}`
-                          : (code ?? "—")
+                        competition ? (
+                          <span className="inline-flex items-center gap-2">
+                            <CompetitionLogo code={code} size="sm" />
+                            {competition.label}
+                          </span>
+                        ) : (
+                          (code ?? "—")
+                        )
                       }
                     />
-                    <Meta label="Matchs appris" value={num(football.pipeline.matches)} />
+                    <Meta icon={Calendar} label="Matchs appris" value={num(football.pipeline.matches)} />
                     <Meta
+                      icon={Home}
                       label="Avantage terrain"
                       value={`×${Math.exp(football.pipeline.dc.homeAdvantage).toFixed(2)}`}
                       hint="Multiplicateur de buts à domicile"
                     />
-                    <Meta label="Dernier match" value={football.pipeline.lastDate} />
+                    <Meta icon={Calendar} label="Dernier match" value={football.pipeline.lastDate} />
                   </CardContent>
                 </Card>
 
@@ -124,9 +137,10 @@ export default async function SportsPage({
             <>
               <Card>
                 <CardContent className="grid gap-6 sm:grid-cols-3">
-                  <Meta label="Matchs appris" value={num(nba.pipeline.games)} />
-                  <Meta label="Équipes" value={String(nba.pipeline.teams.length)} />
+                  <Meta icon={Calendar} label="Matchs appris" value={num(nba.pipeline.games)} />
+                  <Meta icon={Users} label="Équipes" value={String(nba.pipeline.teams.length)} />
                   <Meta
+                    icon={Database}
                     label="Matchs de test"
                     value={num(nba.pipeline.holdout)}
                     hint="Réservés, jamais vus à l'entraînement"
@@ -172,10 +186,23 @@ export default async function SportsPage({
   );
 }
 
-function Meta({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Meta({
+  label,
+  value,
+  hint,
+  icon: Icon,
+}: {
+  label: string;
+  value: React.ReactNode;
+  hint?: string;
+  icon?: LucideIcon;
+}) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-label">{label}</span>
+      <span className="text-label flex items-center gap-1.5">
+        {Icon ? <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden /> : null}
+        {label}
+      </span>
       <span className="tnum text-lg font-bold text-ink">{value}</span>
       {hint && <span className="text-xs text-muted">{hint}</span>}
     </div>

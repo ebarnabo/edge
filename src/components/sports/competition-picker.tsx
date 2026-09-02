@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { CompetitionCarousel } from "@/components/sports/competition-carousel";
 import { COMPETITIONS, sortedCompetitionCodes } from "@/lib/sports/labels";
+import { Trophy } from "lucide-react";
 
 export function CompetitionPicker({
   codes,
@@ -27,9 +28,10 @@ export function CompetitionPicker({
   if (!codes.length) return null;
 
   const items = sortedCompetitionCodes(codes).map((code) => {
-    const info = COMPETITIONS[code] ?? { label: code, country: "Autre", flag: "⚽" };
+    const info = COMPETITIONS[code] ?? { label: code, country: "Autre", flag: "⚽", logo: "" };
     return {
       id: code,
+      code,
       href: hrefFor(code),
       flag: info.flag,
       title: info.label,
@@ -42,7 +44,10 @@ export function CompetitionPicker({
     <Card className="overflow-hidden">
       <CardContent className="flex flex-col gap-4">
         <div className="flex flex-col gap-1 px-0.5">
-          <span className="text-label">Championnat</span>
+          <span className="text-label flex items-center gap-1.5">
+            <Trophy className="size-3.5 opacity-70" aria-hidden />
+            Championnat
+          </span>
           <p className="text-sm text-muted">Fais défiler et sélectionne une compétition.</p>
         </div>
         <CompetitionCarousel items={items} />

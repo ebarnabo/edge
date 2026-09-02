@@ -2,18 +2,65 @@ export interface CompetitionInfo {
   label: string;
   country: string;
   flag: string;
+  /** URL du blason officiel (football-data.org ou asset local) */
+  logo: string;
 }
 
 export const COMPETITIONS: Record<string, CompetitionInfo> = {
-  FL1: { label: "Ligue 1", country: "France", flag: "🇫🇷" },
-  PL: { label: "Premier League", country: "Angleterre", flag: "🇬🇧" },
-  PD: { label: "La Liga", country: "Espagne", flag: "🇪🇸" },
-  SA: { label: "Serie A", country: "Italie", flag: "🇮🇹" },
-  BL1: { label: "Bundesliga", country: "Allemagne", flag: "🇩🇪" },
-  DED: { label: "Eredivisie", country: "Pays-Bas", flag: "🇳🇱" },
-  PPL: { label: "Primeira Liga", country: "Portugal", flag: "🇵🇹" },
-  CL: { label: "Ligue des champions", country: "Europe", flag: "🇪🇺" },
-  NBA: { label: "NBA", country: "États-Unis", flag: "🇺🇸" },
+  FL1: {
+    label: "Ligue 1",
+    country: "France",
+    flag: "🇫🇷",
+    logo: "https://crests.football-data.org/FL1.png",
+  },
+  PL: {
+    label: "Premier League",
+    country: "Angleterre",
+    flag: "🇬🇧",
+    logo: "https://crests.football-data.org/PL.png",
+  },
+  PD: {
+    label: "La Liga",
+    country: "Espagne",
+    flag: "🇪🇸",
+    logo: "https://crests.football-data.org/PD.png",
+  },
+  SA: {
+    label: "Serie A",
+    country: "Italie",
+    flag: "🇮🇹",
+    logo: "https://crests.football-data.org/SA.png",
+  },
+  BL1: {
+    label: "Bundesliga",
+    country: "Allemagne",
+    flag: "🇩🇪",
+    logo: "https://crests.football-data.org/BL1.png",
+  },
+  DED: {
+    label: "Eredivisie",
+    country: "Pays-Bas",
+    flag: "🇳🇱",
+    logo: "https://crests.football-data.org/DED.png",
+  },
+  PPL: {
+    label: "Primeira Liga",
+    country: "Portugal",
+    flag: "🇵🇹",
+    logo: "https://crests.football-data.org/PPL.png",
+  },
+  CL: {
+    label: "Ligue des champions",
+    country: "Europe",
+    flag: "🇪🇺",
+    logo: "https://crests.football-data.org/CL.png",
+  },
+  NBA: {
+    label: "NBA",
+    country: "États-Unis",
+    flag: "🇺🇸",
+    logo: "https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg",
+  },
 };
 
 /** @deprecated Utiliser COMPETITIONS[code].label */
@@ -41,6 +88,7 @@ export function groupCompetitions(codes: string[]) {
       label: code,
       country: "Autre",
       flag: "⚽",
+      logo: "",
     };
     const list = groups.get(info.country) ?? [];
     list.push({ code, info });

@@ -86,17 +86,25 @@ html.dark {
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.2);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
 
-  --mesh-base: #080810;
-  --mesh-a: #529cca;
-  --mesh-b: #8b5cf6;
-  --mesh-c: #f43f5e;
-  --mesh-d: #14b8a6;
-  --mesh-opacity: 0.55;
+  --mesh-base: #191919;
+  --mesh-a: transparent;
+  --mesh-b: transparent;
+  --mesh-c: transparent;
+  --mesh-d: transparent;
+  --mesh-opacity: 0;
   --mesh-blur: 100px;
 
-  --color-surface: rgb(32 32 32 / 0.72);
-  --color-sidebar: rgb(24 24 28 / 0.78);
+  --color-surface: rgb(32 32 32 / 0.92);
+  --color-sidebar: rgb(25 25 25 / 0.95);
   --color-subtle: rgb(255 255 255 / 0.06);
+}
+
+html.dark .mesh-blob {
+  display: none;
+}
+
+html.dark .mesh-vignette {
+  opacity: 0;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
@@ -402,6 +410,16 @@ html.dark .mesh-noise {
 .competition-carousel-flag {
   font-size: 1.25rem;
   line-height: 1;
+}
+
+.competition-carousel-logo {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.competition-carousel-card.is-compact .competition-carousel-logo {
+  width: 1rem;
+  height: 1rem;
 }
 
 .competition-carousel-card.is-compact .competition-carousel-flag {

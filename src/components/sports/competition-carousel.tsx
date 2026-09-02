@@ -4,11 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CompetitionLogo } from "@/components/sports/competition-logo";
 import { cn } from "@/lib/utils";
 
 export interface CarouselItem {
   id: string;
   href: Route;
+  code?: string;
   flag?: string;
   title: string;
   subtitle?: string;
@@ -101,11 +103,13 @@ export function CompetitionCarousel({
               item.selected && "is-selected",
             )}
           >
-            {item.flag && (
+            {item.code ? (
+              <CompetitionLogo code={item.code} size={compact ? "sm" : "md"} className="competition-carousel-logo" />
+            ) : item.flag ? (
               <span className="competition-carousel-flag" aria-hidden>
                 {item.flag}
               </span>
-            )}
+            ) : null}
             {!compact && item.subtitle && (
               <span className="competition-carousel-sub">{item.subtitle}</span>
             )}

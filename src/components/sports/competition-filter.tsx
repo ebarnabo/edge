@@ -2,7 +2,9 @@
 
 import type { Route } from "next";
 import { useSearchParams } from "next/navigation";
+import { Trophy } from "lucide-react";
 import { CompetitionCarousel } from "@/components/sports/competition-carousel";
+import { CompetitionLogo } from "@/components/sports/competition-logo";
 import { COMPETITIONS, sortedCompetitionCodes } from "@/lib/sports/labels";
 import { cn } from "@/lib/utils";
 
@@ -32,12 +34,14 @@ export function CompetitionFilter({
       ...sortedCompetitionCodes(codes).map((code) => ({
         code,
         label: COMPETITIONS[code]?.label ?? code,
-        flag: COMPETITIONS[code]?.flag,
       })),
     ];
     return (
       <div className="flex flex-col gap-3">
-        <span className="text-label">Compétition</span>
+        <span className="text-label flex items-center gap-1.5">
+          <Trophy className="size-3.5 opacity-70" aria-hidden />
+          Compétition
+        </span>
         <div className="flex flex-wrap gap-2">
           {items.map((item) => (
             <button
@@ -45,13 +49,13 @@ export function CompetitionFilter({
               type="button"
               onClick={() => onSelect(item.code)}
               className={cn(
-                "rounded-[var(--radius-pill)] border px-3 py-1.5 text-sm font-semibold transition-colors",
+                "inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-sm font-semibold transition-colors",
                 active === item.code
                   ? "border-accent/30 bg-accent-soft text-accent"
                   : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
               )}
             >
-              {"flag" in item && item.flag ? `${item.flag} ` : ""}
+              {item.code ? <CompetitionLogo code={item.code} size="sm" /> : null}
               {item.label}
             </button>
           ))}
@@ -66,6 +70,7 @@ export function CompetitionFilter({
       const info = COMPETITIONS[code];
       return {
         id: code,
+        code,
         href: hrefFor(code),
         flag: info?.flag,
         title: info?.label ?? code,
@@ -76,7 +81,10 @@ export function CompetitionFilter({
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-label">Compétition</span>
+      <span className="text-label flex items-center gap-1.5">
+        <Trophy className="size-3.5 opacity-70" aria-hidden />
+        Compétition
+      </span>
       <CompetitionCarousel items={items} compact />
     </div>
   );

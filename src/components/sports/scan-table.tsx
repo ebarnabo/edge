@@ -1,7 +1,18 @@
 import Link from "next/link";
 import type { Route } from "next";
+import {
+  ArrowRight,
+  BarChart3,
+  Calendar,
+  ChevronDown,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Trophy,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CompetitionLogo } from "@/components/sports/competition-logo";
 import type { ScanRow } from "@/lib/sports/scan-types";
 import { COMPETITIONS } from "@/lib/sports/labels";
 import {
@@ -33,7 +44,10 @@ function Recommendation({ row }: { row: ScanRow }) {
     const edge = row.bestEdge;
     return (
       <div className="rounded-[14px] border border-edge/35 bg-edge/8 p-4">
-        <p className="text-sm font-semibold text-edge">Opportunité détectée</p>
+        <p className="flex items-center gap-2 text-sm font-semibold text-edge">
+          <Sparkles className="size-4 shrink-0" aria-hidden />
+          Opportunité détectée
+        </p>
         <p className="mt-2 text-sm leading-relaxed text-ink">
           Le modèle estime <strong>{displayTeamName(edge.label)}</strong> à{" "}
           <strong>{pct(edge.modelProb, 0)}</strong>, le marché à{" "}
@@ -190,8 +204,9 @@ function detailHref(row: ScanRow): Route {
 
 function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
   const time = formatMatchTime(row.fixture.commenceTime);
+  const compCode = row.fixture.sport === "nba" ? "NBA" : row.fixture.competition;
   const compLabel =
-    COMPETITIONS[row.fixture.competition]?.label ??
+    COMPETITIONS[compCode]?.label ??
     (row.fixture.sport === "nba" ? "NBA" : row.fixture.competition);
   const pick = pickSummary(row);
 
@@ -209,13 +224,15 @@ function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
             <span className="text-xs text-muted">
               {pick.isDraw ? "Issue la plus probable" : "Victoire la plus probable"}
             </span>
-            <span className="text-lg font-bold text-ink">
+            <span className="flex items-center gap-2 text-lg font-bold text-ink">
+              {!pick.isDraw && <Trophy className="size-4 shrink-0 text-edge" aria-hidden />}
               {pick.isDraw ? "Match nul" : displayTeamName(pick.team)}{" "}
               <span className="tnum text-edge">{pct(pick.prob, 0)}</span>
             </span>
           </div>
           {row.bestEdge && (
-            <Badge tone="edge" className="shrink-0">
+            <Badge tone="edge" className="inline-flex shrink-0 items-center gap-1">
+              <TrendingUp className="size-3" aria-hidden />
               +{pct(row.bestEdge.edge)} vs marché
             </Badge>
           )}
@@ -224,11 +241,15 @@ function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge tone="neutral">
+              <Badge tone="neutral" className="inline-flex items-center gap-1.5">
+                <Calendar className="size-3 opacity-70" aria-hidden />
                 {formatMatchDate(row.fixture.commenceTime)}
                 {time && ` · ${time}`}
               </Badge>
-              <Badge tone="neutral">{compLabel}</Badge>
+              <Badge tone="neutral" className="inline-flex items-center gap-1.5">
+                <CompetitionLogo code={compCode} size="sm" />
+                {compLabel}
+              </Badge>
             </div>
             <h3 className="text-base font-semibold tracking-tight text-muted">
               <span>{displayTeamName(row.fixture.home)}</span>
@@ -246,8 +267,10 @@ function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
         <Recommendation row={row} />
 
         <details className="group">
-          <summary className="cursor-pointer text-sm font-semibold text-muted hover:text-ink">
+          <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-muted hover:text-ink">
+            <BarChart3 className="size-4 shrink-0 opacity-70" aria-hidden />
             Comparaison détaillée modèle / marché
+            <ChevronDown className="ml-auto size-4 shrink-0 opacity-50 transition-transform group-open:rotate-180" aria-hidden />
           </summary>
           <div className="mt-3">
             <ComparisonTable row={row} />
@@ -315,9 +338,11 @@ function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
 
         <Link
           href={detailHref(row)}
-          className="text-sm font-semibold text-edge underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-edge underline-offset-4 hover:underline"
         >
-          Analyser ce match en détail →
+          <Target className="size-4 shrink-0" aria-hidden />
+          Analyser ce match en détail
+          <ArrowRight className="size-3.5 shrink-0 opacity-70" aria-hidden />
         </Link>
       </CardContent>
     </Card>

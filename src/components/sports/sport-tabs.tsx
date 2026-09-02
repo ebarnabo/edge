@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { useSearchParams } from "next/navigation";
+import { Activity, Trophy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
@@ -28,12 +29,14 @@ export function SportTabs({
     <Tabs value={tab}>
       <TabsList className="w-full sm:w-auto">
         <TabsTrigger value="football" asChild>
-          <Link href={hrefFor("football")} className={cn(tab === "football" && "pointer-events-none")}>
+          <Link href={hrefFor("football")} className={cn("inline-flex items-center gap-1.5", tab === "football" && "pointer-events-none")}>
+            <Trophy className="size-3.5 shrink-0 opacity-80" aria-hidden />
             Football
           </Link>
         </TabsTrigger>
         <TabsTrigger value="nba" asChild>
-          <Link href={hrefFor("nba")} className={cn(tab === "nba" && "pointer-events-none")}>
+          <Link href={hrefFor("nba")} className={cn("inline-flex items-center gap-1.5", tab === "nba" && "pointer-events-none")}>
+            <Activity className="size-3.5 shrink-0 opacity-80" aria-hidden />
             NBA
           </Link>
         </TabsTrigger>
