@@ -67,6 +67,12 @@ jobs:
             *) echo "Cible inconnue" && exit 1 ;;
           esac
 
+      - name: Pré-calculer les modèles sport
+        if: contains(fromJSON('["results","all"]'), steps.pick.outputs.target)
+        env:
+          EDGE_ALLOW_MODEL_BUILD: "true"
+        run: npm run build:models
+
       - name: Enregistrer les données
         env:
           TARGET: ${{ steps.pick.outputs.target }}

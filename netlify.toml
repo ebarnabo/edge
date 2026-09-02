@@ -4,3 +4,4 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  EDGE_ALLOW_MODEL_BUILD = "false"

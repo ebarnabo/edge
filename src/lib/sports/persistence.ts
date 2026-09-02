@@ -9,17 +9,18 @@ import type { Game } from "./elo-nba";
 /**
  * Persistance des chaînes ajustées.
  *
- * Reconstruire une chaîne coûte une dizaine de secondes : validation par
- * origine glissante, réajustements successifs, ajustement final. On l'écrit
- * sur disque, indexée sur l'empreinte des données d'entrée — un nouvel import
- * change l'empreinte et déclenche automatiquement un réajustement.
- *
- * Les prédictions intermédiaires du backtest ne sont pas conservées : elles
- * pèsent lourd et n'ont servi qu'à choisir le mélange, déjà figé.
+ * En production (Netlify), on ne reconstruit jamais : le calcul prend trop
+ * longtemps pour une fonction serverless. Les modèles sont pré-calculés dans
+ * data/models/ par le workflow GitHub Actions (npm run build:models).
  */
 
-const CACHE = path.join(process.cwd(), ".cache", "models");
+const MODELS_DIR = path.join(process.cwd(), "data", "models");
 const VERSION = 3; // à incrémenter dès qu'un modèle change de forme
+
+/** En prod serverless, lecture seule — pas de réajustement à la volée. */
+export const canBuildModels =
+  process.env.EDGE_ALLOW_MODEL_BUILD === "true" ||
+  (process.env.NODE_ENV === "development" && !process.env.NETLIFY);
 
 /** Empreinte compacte et stable des données d'entrée. */
 export function fingerprint(parts: (string | number)[]): string {
@@ -35,7 +36,7 @@ export function fingerprint(parts: (string | number)[]): string {
 
 async function read<T>(file: string, key: string): Promise<T | null> {
   try {
-    const raw = JSON.parse(await readFile(path.join(CACHE, file), "utf8"));
+    const raw = JSON.parse(await readFile(path.join(MODELS_DIR, file), "utf8"));
     return raw.key === key ? (raw.payload as T) : null;
   } catch {
     return null;
@@ -43,8 +44,8 @@ async function read<T>(file: string, key: string): Promise<T | null> {
 }
 
 async function write(file: string, key: string, payload: unknown) {
-  await mkdir(CACHE, { recursive: true });
-  await writeFile(path.join(CACHE, file), JSON.stringify({ key, payload }), "utf8");
+  await mkdir(MODELS_DIR, { recursive: true });
+  await writeFile(path.join(MODELS_DIR, file), JSON.stringify({ key, payload }), "utf8");
 }
 
 // ------------------------------------------------------------- football
@@ -96,6 +97,12 @@ export async function loadOrBuildFootball(
   const cached = await read<StoredFootball>(file, key);
   if (cached) return { pipeline: deserialiseFootball(cached), fromCache: true };
 
+  if (!canBuildModels) {
+    throw new Error(
+      `Modèle football ${code} absent. Lance l'import complet (Actions → ingest → all) pour pré-calculer les modèles.`,
+    );
+  }
+
   const pipeline = buildPipeline(matches);
   await write(file, key, serialiseFootball(pipeline));
   return { pipeline, fromCache: false };
@@ -120,6 +127,12 @@ export async function loadOrBuildNba(
       pipeline: { ...cached, engine: NbaEngine.fromJSON(cached.engine) },
       fromCache: true,
     };
+  }
+
+  if (!canBuildModels) {
+    throw new Error(
+      "Modèle NBA absent. Lance l'import complet (Actions → ingest → all) pour pré-calculer les modèles.",
+    );
   }
 
   const pipeline = buildNbaPipeline(games);
