@@ -37,6 +37,19 @@
   --loto: var(--color-loto);
   --euro: var(--color-euro);
   --dream: var(--color-dream);
+
+  /* Mesh gradient — light */
+  --mesh-base: #f4f2ff;
+  --mesh-a: #2383e2;
+  --mesh-b: #a855f7;
+  --mesh-c: #f97316;
+  --mesh-d: #06b6d4;
+  --mesh-opacity: 0.42;
+  --mesh-blur: 90px;
+
+  --color-surface: rgb(255 255 255 / 0.72);
+  --color-sidebar: rgb(247 247 245 / 0.75);
+  --color-subtle: rgb(255 255 255 / 0.45);
 }
 
 * {
@@ -72,6 +85,18 @@ html.dark {
   --color-warn: #ff7369;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.2);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
+
+  --mesh-base: #080810;
+  --mesh-a: #529cca;
+  --mesh-b: #8b5cf6;
+  --mesh-c: #f43f5e;
+  --mesh-d: #14b8a6;
+  --mesh-opacity: 0.55;
+  --mesh-blur: 100px;
+
+  --color-surface: rgb(32 32 32 / 0.72);
+  --color-sidebar: rgb(24 24 28 / 0.78);
+  --color-subtle: rgb(255 255 255 / 0.06);
 }
 
 html.dark ::-webkit-scrollbar-thumb {
@@ -83,12 +108,141 @@ html.dark .data-table tbody tr:nth-child(even) {
 }
 
 body {
-  background: var(--color-canvas);
+  background: transparent;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
   font-size: 15px;
+}
+
+/* ── Gradient mesh animé ── */
+.mesh-background {
+  background: var(--mesh-base);
+}
+
+.mesh-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(var(--mesh-blur));
+  opacity: var(--mesh-opacity);
+  will-change: transform;
+}
+
+.mesh-blob-a {
+  width: min(70vw, 520px);
+  height: min(70vw, 520px);
+  background: var(--mesh-a);
+  top: -12%;
+  left: -8%;
+  animation: mesh-float-a 28s ease-in-out infinite;
+}
+
+.mesh-blob-b {
+  width: min(60vw, 480px);
+  height: min(60vw, 480px);
+  background: var(--mesh-b);
+  top: 20%;
+  right: -12%;
+  animation: mesh-float-b 34s ease-in-out infinite;
+}
+
+.mesh-blob-c {
+  width: min(55vw, 420px);
+  height: min(55vw, 420px);
+  background: var(--mesh-c);
+  bottom: -8%;
+  left: 15%;
+  animation: mesh-float-c 31s ease-in-out infinite;
+}
+
+.mesh-blob-d {
+  width: min(45vw, 360px);
+  height: min(45vw, 360px);
+  background: var(--mesh-d);
+  bottom: 10%;
+  right: 20%;
+  animation: mesh-float-d 26s ease-in-out infinite;
+}
+
+.mesh-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+html.dark .mesh-noise {
+  opacity: 0.06;
+}
+
+.mesh-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 45%, transparent 30%, var(--mesh-base) 100%);
+  opacity: 0.85;
+}
+
+@keyframes mesh-float-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(8%, 6%) scale(1.08);
+  }
+  66% {
+    transform: translate(-4%, 10%) scale(0.95);
+  }
+}
+
+@keyframes mesh-float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(-10%, 8%) scale(1.1);
+  }
+  70% {
+    transform: translate(5%, -6%) scale(0.92);
+  }
+}
+
+@keyframes mesh-float-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  35% {
+    transform: translate(12%, -8%) scale(1.06);
+  }
+  65% {
+    transform: translate(-6%, -4%) scale(0.98);
+  }
+}
+
+@keyframes mesh-float-d {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-8%, 12%) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-blob {
+    animation: none !important;
+  }
+}
+
+/* Surfaces glass */
+.glass-surface {
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
 }
 
 .tnum {

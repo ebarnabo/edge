@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { MeshBackground } from "@/components/shell/mesh-background";
 import { Nav } from "@/components/shell/nav";
 import { ThemeProvider } from "@/components/shell/theme-provider";
 import { ServiceWorker } from "@/components/shell/service-worker";
@@ -23,8 +24,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#191919" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f2ff" },
+    { media: "(prefers-color-scheme: dark)", color: "#080810" },
   ],
   colorScheme: "light dark",
   width: "device-width",
@@ -40,7 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-dvh bg-canvas text-ink antialiased transition-colors duration-300">
+      <body className="min-h-dvh text-ink antialiased transition-colors duration-300">
+        <MeshBackground />
         <ThemeProvider>
           <Nav />
           <main className="lg:pl-[240px]">

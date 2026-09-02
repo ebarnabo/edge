@@ -26,7 +26,7 @@ export function Nav() {
   return (
     <>
       {/* Sidebar desktop — style Notion */}
-      <nav className="fixed top-0 left-0 hidden h-dvh w-[240px] flex-col border-r border-line bg-sidebar p-3 lg:flex">
+      <nav className="glass-surface fixed top-0 left-0 hidden h-dvh w-[240px] flex-col border-r border-line bg-sidebar p-3 lg:flex">
         <Link href="/" className="mb-4 flex items-center gap-2 rounded-[var(--radius-card)] px-2 py-2 hover:bg-hover">
           <span className="flex size-7 items-center justify-center rounded-[var(--radius-card)] bg-accent text-xs font-bold text-white">
             E
@@ -71,7 +71,7 @@ export function Nav() {
       </div>
 
       {/* Barre mobile */}
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-surface lg:hidden">
+      <nav className="glass-surface fixed inset-x-0 bottom-0 z-50 border-t border-line bg-surface lg:hidden">
         <ul className="mx-auto flex max-w-lg items-stretch px-1 pt-1 pb-[max(6px,env(safe-area-inset-bottom))]">
           {LINKS.map(({ href, short, icon: Icon }) => (
             <li key={href} className="min-w-0 flex-1">
