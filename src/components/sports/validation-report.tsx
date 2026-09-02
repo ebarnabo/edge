@@ -165,7 +165,7 @@ export function ValidationReport({
                   {
                     key: baselineName,
                     label: baselineName,
-                    color: "oklch(0.62 0.014 264)",
+                    color: "rgb(55 53 47 / 0.45)",
                     dashed: true,
                   },
                 ]}

@@ -47,8 +47,8 @@ export function CompetitionFilter({
               className={cn(
                 "rounded-[var(--radius-pill)] border px-3 py-1.5 text-sm font-semibold transition-colors",
                 active === item.code
-                  ? "border-edge/50 bg-edge/15 text-edge"
-                  : "border-line/60 bg-subtle text-muted hover:border-line hover:text-ink",
+                  ? "border-accent/30 bg-accent-soft text-accent"
+                  : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
               )}
             >
               {"flag" in item && item.flag ? `${item.flag} ` : ""}

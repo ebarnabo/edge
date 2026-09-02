@@ -15,29 +15,30 @@ import {
   YAxis,
 } from "recharts";
 
-const AXIS = { stroke: "oklch(0.72 0.016 264)", fontSize: 11 };
-const GRID = "oklch(0.34 0.02 264 / 0.45)";
+const AXIS = { stroke: "rgb(55 53 47 / 0.45)", fontSize: 11 };
+const GRID = "rgb(55 53 47 / 0.08)";
 
 const TOOLTIP = {
   contentStyle: {
-    background: "oklch(0.22 0.02 264)",
-    border: "1px solid oklch(0.38 0.02 264)",
-    borderRadius: 12,
-    padding: "12px 16px",
+    background: "#ffffff",
+    border: "1px solid rgb(55 53 47 / 0.09)",
+    borderRadius: 6,
+    padding: "10px 14px",
     fontSize: 13,
-    color: "oklch(0.97 0.004 264)",
+    color: "#37352f",
+    boxShadow: "0 4px 12px rgb(15 15 15 / 0.08)",
   },
-  labelStyle: { color: "oklch(0.78 0.016 264)", marginBottom: 8 },
-  itemStyle: { color: "oklch(0.97 0.004 264)" },
+  labelStyle: { color: "rgb(55 53 47 / 0.65)", marginBottom: 6 },
+  itemStyle: { color: "#37352f" },
 } as const;
 
 export const SERIES_COLORS = [
-  "oklch(0.769 0.117 172)",
-  "oklch(0.812 0.142 79)",
-  "oklch(0.727 0.128 274)",
-  "oklch(0.742 0.124 328)",
-  "oklch(0.672 0.186 24)",
-  "oklch(0.688 0.021 264)",
+  "#2383e2",
+  "#d97706",
+  "#7c3aed",
+  "#db2777",
+  "#dc2626",
+  "rgb(55 53 47 / 0.45)",
 ];
 
 interface Series {
@@ -85,14 +86,14 @@ export function TrendChart({
             <ReferenceArea
               y1={band.from}
               y2={band.to}
-              fill="oklch(0.769 0.117 172)"
+              fill="#2383e2"
               fillOpacity={0.1}
             />
           )}
           {reference && (
             <ReferenceLine
               y={reference.value}
-              stroke="oklch(0.688 0.021 264)"
+              stroke="rgb(55 53 47 / 0.35)"
               strokeDasharray="6 6"
               label={{ value: reference.label, fill: AXIS.stroke, fontSize: 11, position: "right" }}
             />
@@ -101,7 +102,7 @@ export function TrendChart({
           <Legend
             iconType="plainline"
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "oklch(0.78 0.016 264)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: "rgb(55 53 47 / 0.65)" }}>{v}</span>}
           />
           {series.map((s, i) => (
             <Line
@@ -149,13 +150,13 @@ export function CalibrationChart({
           <Legend
             iconType="plainline"
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "oklch(0.78 0.016 264)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: "rgb(55 53 47 / 0.65)" }}>{v}</span>}
           />
           <Line
             type="monotone"
             dataKey="parfait"
             name="Calibration parfaite"
-            stroke="oklch(0.512 0.019 264)"
+            stroke="rgb(55 53 47 / 0.25)"
             strokeDasharray="5 5"
             strokeWidth={1.5}
             dot={false}
@@ -193,12 +194,12 @@ export function DistributionChart({
           <CartesianGrid stroke={GRID} strokeDasharray="2 6" vertical={false} />
           <XAxis dataKey="label" tick={AXIS} tickLine={false} axisLine={false} />
           <YAxis tick={AXIS} tickLine={false} axisLine={false} width={48} />
-          <Tooltip {...TOOLTIP} cursor={{ fill: "oklch(0.256 0.024 264 / 0.5)" }} />
+          <Tooltip {...TOOLTIP} cursor={{ fill: "rgb(55 53 47 / 0.04)" }} />
           <Legend
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "oklch(0.78 0.016 264)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: "rgb(55 53 47 / 0.65)" }}>{v}</span>}
           />
-          <Bar dataKey="attendu" fill="oklch(0.318 0.021 264)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+          <Bar dataKey="attendu" fill="rgb(55 53 47 / 0.15)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
           <Bar dataKey="observé" fill={SERIES_COLORS[1]} radius={[6, 6, 0, 0]} isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>

@@ -16,16 +16,16 @@ export function Metric({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-[14px] border border-line/50 bg-subtle px-4 py-3.5",
-        highlight && "border-edge/35 bg-edge/8",
+        "flex flex-col gap-1 rounded-[var(--radius-card)] border border-line px-3 py-2.5",
+        highlight ? "border-accent/30 bg-accent-soft" : "bg-subtle",
         className,
       )}
     >
       <span className="text-label">{label}</span>
       <span
         className={cn(
-          "tnum text-xl font-extrabold tracking-tight sm:text-2xl",
-          highlight ? "text-edge" : "text-ink",
+          "tnum text-lg font-semibold tracking-tight",
+          highlight ? "text-accent" : "text-ink",
         )}
       >
         {value}

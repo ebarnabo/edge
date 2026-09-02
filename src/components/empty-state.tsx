@@ -10,12 +10,12 @@ export function EmptyState({
   hint: string;
 }) {
   return (
-    <Card className="border-warn/25">
-      <CardContent className="flex flex-col gap-5">
-        <h2 className="text-xl font-bold tracking-tight text-ink">{title}</h2>
+    <Card className="border-warn/20 bg-red-50/30">
+      <CardContent className="flex flex-col gap-3">
+        <h2 className="text-base font-semibold text-ink">{title}</h2>
         <p className="max-w-[60ch] text-sm leading-relaxed text-muted">{hint}</p>
         {command && (
-          <code className="tnum rounded-[14px] border border-line/60 bg-subtle px-4 py-3 text-sm text-edge">
+          <code className="tnum rounded-[var(--radius-card)] border border-line bg-subtle px-3 py-2 font-mono text-xs text-accent">
             {command}
           </code>
         )}

@@ -95,8 +95,8 @@ export function ScanFilters({
               className={cn(
                 "rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
                 state.view === v.id
-                  ? "border-edge/50 bg-edge/15 text-edge"
-                  : "border-line/60 bg-subtle text-muted hover:border-line hover:text-ink",
+                  ? "border-accent/30 bg-accent-soft text-accent"
+                  : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
               )}
             >
               {v.label}
@@ -133,8 +133,8 @@ export function ScanFilters({
               className={cn(
                 "rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
                 state.sort === s.id
-                  ? "border-edge/50 bg-edge/15 text-edge"
-                  : "border-line/60 bg-subtle text-muted hover:border-line hover:text-ink",
+                  ? "border-accent/30 bg-accent-soft text-accent"
+                  : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
               )}
             >
               {s.label}

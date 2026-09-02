@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Nav } from "@/components/shell/nav";
 import { ServiceWorker } from "@/components/shell/service-worker";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   description:
     "Analyse des tirages FDJ, espérance de gain réelle, systèmes réducteurs et prédictions sportives validées hors échantillon.",
   applicationName: "Edge",
-  appleWebApp: { capable: true, title: "Edge", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "Edge", statusBarStyle: "default" },
   icons: { icon: "/icon-192.png", apple: "/apple-icon.png" },
   formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1a1f2b",
-  colorScheme: "dark",
+  themeColor: "#ffffff",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -30,11 +30,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={jakarta.className}>
-      <body className="min-h-dvh">
+    <html lang="fr" className={inter.className}>
+      <body className="min-h-dvh bg-canvas text-ink antialiased">
         <Nav />
-        <main className="lg:pl-60 xl:pl-64">
-          <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-[104px] sm:px-6 sm:pt-10 lg:px-8 lg:pb-14">
+        <main className="lg:pl-[240px]">
+          <div className="mx-auto w-full max-w-[900px] px-5 pt-10 pb-24 sm:px-8 sm:pt-12 lg:pb-16">
             {children}
           </div>
         </main>

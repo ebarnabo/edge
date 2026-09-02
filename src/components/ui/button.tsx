@@ -6,20 +6,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const button = cva(
-  "inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] font-semibold whitespace-nowrap transition-[transform,background-color,border-color,color] duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] font-medium whitespace-nowrap transition-colors duration-150 disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         solid: "bg-ink text-canvas hover:bg-ink/90",
-        edge: "bg-edge text-canvas hover:bg-edge/90",
-        outline: "border border-line bg-raised text-ink hover:border-line hover:bg-subtle",
-        ghost: "text-muted hover:bg-raised hover:text-ink",
+        accent: "bg-accent text-white hover:bg-accent/90",
+        edge: "bg-accent text-white hover:bg-accent/90",
+        outline: "border border-line bg-surface text-ink hover:bg-hover",
+        ghost: "text-muted hover:bg-hover hover:text-ink",
       },
       size: {
-        sm: "h-8 px-4 text-xs",
-        md: "h-11 px-6 text-sm",
-        lg: "h-12 px-7 text-sm",
-        icon: "size-11",
+        sm: "h-7 px-3 text-xs",
+        md: "h-9 px-4 text-sm",
+        lg: "h-10 px-5 text-sm",
+        icon: "size-9",
       },
     },
     defaultVariants: { variant: "outline", size: "md" },
