@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Metric } from "@/components/ui/metric";
 import type { ScanRow } from "@/lib/sports/scan";
-import { COMPETITION_LABELS } from "@/lib/sports/labels";
+import { COMPETITIONS } from "@/lib/sports/labels";
 import { eur, pct } from "@/lib/utils";
 
 const dayLabel = (iso: string) =>
@@ -22,7 +22,8 @@ export function ScanTable({ rows }: { rows: ScanRow[] }) {
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge tone="neutral">{dayLabel(row.fixture.commenceTime)}</Badge>
                     <Badge tone="neutral">
-                      {COMPETITION_LABELS[row.fixture.competition] ?? row.fixture.competition}
+                      {COMPETITIONS[row.fixture.competition]?.label ??
+                        (row.fixture.sport === "nba" ? "NBA" : row.fixture.competition)}
                     </Badge>
                   </div>
                   <h3 className="text-lg font-bold tracking-tight text-balance sm:text-xl">
