@@ -1,46 +1,25 @@
 import { predictMatch, type Pipeline } from "./football-pipeline";
 import { predictNba, type NbaPipeline } from "./nba-pipeline";
-import { aggregate, matchTeam, valueAgainstMarket, type MarketEvent, type ValuedOutcome } from "./odds";
+import { aggregate, matchTeam, type MarketEvent } from "./odds";
 import { loadFixtures, loadOdds, type Fixture } from "@/lib/data";
 import { footballPipeline, nbaPipeline } from "./models";
+import {
+  applyScanParams,
+  scanCacheKey,
+  type ScanCacheFile,
+  type ScanRowBase,
+} from "./scan-types";
 
-/**
- * Balayage des matchs à venir.
- *
- * Chaque rencontre est prédite par l'ensemble validé, puis confrontée au
- * marché quand des cotes sont disponibles. Le classement se fait sur l'écart
- * au consensus, pondéré par l'apport mesuré du modèle sur ce championnat :
- * un écart de 3 % annoncé par un modèle qui ne bat la ligne de base que de
- * 1 % ne vaut pas un écart de 3 % annoncé par un modèle à 8 %.
- */
-
-export interface ScanRow {
-  fixture: Fixture;
-  probs: number[];
-  labels: string[];
-  confidence: number;
-  /** Divergence maximale entre les modèles de l'ensemble, en points */
-  disagreement: number;
-  market: {
-    books: number;
-    sharpBook: string | null;
-    averageMargin: number;
-    bestPriceGain: number;
-    outcomes: ValuedOutcome[];
-  } | null;
-  /** Meilleure occasion du match, si elle dépasse le seuil */
-  bestEdge: ValuedOutcome | null;
-  /** Apport du modèle sur ce championnat, en % de log-perte */
-  modelSkill: number;
-  extra?: { lambda: number; mu: number; over25: number } | { spread: number; total: number };
-}
+export type { ScanRow, ScanRowBase, ScanCacheFile } from "./scan-types";
+export { applyScanParams, maxWinProb, favoritePick, scanCacheKey } from "./scan-types";
 
 export interface ScanResult {
-  rows: ScanRow[];
+  rows: ReturnType<typeof applyScanParams>;
   fixturesUpdatedAt: string | null;
   oddsUpdatedAt: string | null;
   withOdds: number;
   opportunities: number;
+  fromCache: boolean;
 }
 
 function findEvent(events: MarketEvent[], fixture: Fixture): MarketEvent | null {
@@ -57,16 +36,31 @@ function findEvent(events: MarketEvent[], fixture: Fixture): MarketEvent | null 
   return null;
 }
 
-export async function scanFixtures(opts: { bankroll?: number; threshold?: number } = {}): Promise<ScanResult> {
-  const { bankroll = 100, threshold = 0.03 } = opts;
-
+/** Prédictions + marché — partie coûteuse, cacheable. */
+export async function buildScanBase(): Promise<{
+  rows: ScanRowBase[];
+  fixturesUpdatedAt: string | null;
+  oddsUpdatedAt: string | null;
+}> {
   const [fixtureFile, oddsFile] = await Promise.all([loadFixtures(), loadOdds()]);
   const fixtures = fixtureFile?.fixtures ?? [];
   const events = oddsFile?.events ?? [];
 
-  const football = new Map<string, Pipeline | null>();
-  let nba: NbaPipeline | null = null;
-  const rows: ScanRow[] = [];
+  const footballCodes = [
+    ...new Set(fixtures.filter((f) => f.sport === "football").map((f) => f.competition)),
+  ];
+  const needsNba = fixtures.some((f) => f.sport === "nba");
+
+  const [footballResults, nbaResult] = await Promise.all([
+    Promise.all(footballCodes.map(async (code) => [code, await footballPipeline(code)] as const)),
+    needsNba ? nbaPipeline() : Promise.resolve({ pipeline: null as NbaPipeline | null }),
+  ]);
+
+  const football = new Map<string, Pipeline | null>(
+    footballResults.map(([code, { pipeline }]) => [code, pipeline]),
+  );
+  const nba = nbaResult.pipeline;
+  const rows: ScanRowBase[] = [];
 
   for (const fixture of fixtures) {
     let probs: number[] | null = null;
@@ -74,12 +68,9 @@ export async function scanFixtures(opts: { bankroll?: number; threshold?: number
     let confidence = 0;
     let disagreement = 0;
     let skill = 0;
-    let extra: ScanRow["extra"];
+    let extra: ScanRowBase["extra"];
 
     if (fixture.sport === "football") {
-      if (!football.has(fixture.competition)) {
-        football.set(fixture.competition, (await footballPipeline(fixture.competition)).pipeline);
-      }
       const pipeline = football.get(fixture.competition);
       if (!pipeline) continue;
 
@@ -99,7 +90,6 @@ export async function scanFixtures(opts: { bankroll?: number; threshold?: number
       skill = pipeline.validation.reports.at(-1)?.skill ?? 0;
       extra = { lambda: f.goals.lambda, mu: f.goals.mu, over25: f.goals.over25 };
     } else {
-      if (!nba) nba = (await nbaPipeline()).pipeline;
       if (!nba) continue;
 
       const home = matchTeam(fixture.home, nba.teams);
@@ -122,9 +112,7 @@ export async function scanFixtures(opts: { bankroll?: number; threshold?: number
     if (!probs) continue;
 
     const event = findEvent(events, fixture);
-    const market = event ? aggregate(event) : null;
-    const valued = market ? valueAgainstMarket(market, probs, { bankroll, threshold }) : null;
-    const best = valued?.filter((v) => v.verdict === "value").sort((a, b) => b.edge - a.edge)[0] ?? null;
+    const marketBase = event ? aggregate(event) : null;
 
     rows.push({
       fixture,
@@ -134,33 +122,84 @@ export async function scanFixtures(opts: { bankroll?: number; threshold?: number
       disagreement,
       modelSkill: skill,
       extra,
-      market:
-        market && valued
-          ? {
-              books: market.books,
-              sharpBook: market.sharpBook,
-              averageMargin: market.averageMargin,
-              bestPriceGain: market.bestPriceGain,
-              outcomes: valued,
-            }
-          : null,
-      bestEdge: best,
+      marketBase,
     });
   }
-
-  // Classement : les occasions d'abord, par écart pondéré du crédit du modèle.
-  rows.sort((a, b) => {
-    const score = (r: ScanRow) =>
-      r.bestEdge ? r.bestEdge.edge * Math.max(0.2, Math.min(1, r.modelSkill / 5)) : -1;
-    const diff = score(b) - score(a);
-    return diff !== 0 ? diff : a.fixture.commenceTime.localeCompare(b.fixture.commenceTime);
-  });
 
   return {
     rows,
     fixturesUpdatedAt: fixtureFile?.updatedAt ?? null,
     oddsUpdatedAt: oddsFile?.updatedAt ?? null,
+  };
+}
+
+let memoryCache: {
+  key: string;
+  base: ScanRowBase[];
+  fixturesUpdatedAt: string | null;
+  oddsUpdatedAt: string | null;
+} | null = null;
+
+export async function getScanBase(): Promise<{
+  rows: ScanRowBase[];
+  fixturesUpdatedAt: string | null;
+  oddsUpdatedAt: string | null;
+  fromCache: boolean;
+}> {
+  const { readFile } = await import("node:fs/promises");
+  const path = await import("node:path");
+
+  const [fixtureFile, oddsFile] = await Promise.all([loadFixtures(), loadOdds()]);
+  const fixturesUpdatedAt = fixtureFile?.updatedAt ?? "";
+  const oddsUpdatedAt = oddsFile?.updatedAt ?? "";
+  const key = scanCacheKey(fixturesUpdatedAt, oddsUpdatedAt);
+
+  if (memoryCache?.key === key) {
+    return {
+      rows: memoryCache.base,
+      fixturesUpdatedAt: memoryCache.fixturesUpdatedAt,
+      oddsUpdatedAt: memoryCache.oddsUpdatedAt,
+      fromCache: true,
+    };
+  }
+
+  try {
+    const raw = JSON.parse(
+      await readFile(path.join(process.cwd(), "data", "scan-cache.json"), "utf8"),
+    ) as ScanCacheFile;
+    if (raw.key === key && raw.rows.length) {
+      memoryCache = {
+        key,
+        base: raw.rows,
+        fixturesUpdatedAt: raw.fixturesUpdatedAt,
+        oddsUpdatedAt: raw.oddsUpdatedAt,
+      };
+      return { rows: raw.rows, fixturesUpdatedAt, oddsUpdatedAt, fromCache: true };
+    }
+  } catch {
+    /* cache absent ou périmé */
+  }
+
+  const built = await buildScanBase();
+  memoryCache = {
+    key,
+    base: built.rows,
+    fixturesUpdatedAt: built.fixturesUpdatedAt,
+    oddsUpdatedAt: built.oddsUpdatedAt,
+  };
+  return { ...built, fromCache: false };
+}
+
+export async function scanFixtures(opts: { bankroll?: number; threshold?: number } = {}): Promise<ScanResult> {
+  const { rows: base, fixturesUpdatedAt, oddsUpdatedAt, fromCache } = await getScanBase();
+  const rows = applyScanParams(base, opts);
+
+  return {
+    rows,
+    fixturesUpdatedAt,
+    oddsUpdatedAt,
     withOdds: rows.filter((r) => r.market).length,
     opportunities: rows.filter((r) => r.bestEdge).length,
+    fromCache,
   };
 }

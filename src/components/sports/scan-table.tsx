@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { ScanRow } from "@/lib/sports/scan";
+import type { ScanRow } from "@/lib/sports/scan-types";
 import { COMPETITIONS } from "@/lib/sports/labels";
 import {
   displayTeamName,
@@ -10,7 +10,7 @@ import {
   formatMatchDate,
   formatMatchTime,
 } from "@/lib/sports/display";
-import { groupRowsByDate } from "@/lib/sports/filter-rows";
+import { groupRowsByDate, pickSummary, type SortMode } from "@/lib/sports/filter-rows";
 import { eur, pct } from "@/lib/utils";
 
 const VERDICT_LABELS = {
@@ -187,15 +187,39 @@ function detailHref(row: ScanRow): Route {
   return `/sports?${params.toString()}` as Route;
 }
 
-function MatchCard({ row }: { row: ScanRow }) {
+function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
   const time = formatMatchTime(row.fixture.commenceTime);
   const compLabel =
     COMPETITIONS[row.fixture.competition]?.label ??
     (row.fixture.sport === "nba" ? "NBA" : row.fixture.competition);
+  const pick = pickSummary(row);
 
   return (
     <Card className={row.bestEdge ? "border-edge/35" : undefined}>
-      <CardContent className="flex flex-col gap-5">
+      <CardContent className="flex flex-col gap-4">
+        {/* Pari principal — lisible en un coup d'œil */}
+        <div className="flex flex-wrap items-center gap-3 rounded-[14px] border border-line/50 bg-subtle px-4 py-3">
+          {rank !== undefined && (
+            <span className="tnum flex size-8 shrink-0 items-center justify-center rounded-full bg-edge/15 text-sm font-bold text-edge">
+              {rank}
+            </span>
+          )}
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="text-xs text-muted">
+              {pick.isDraw ? "Issue la plus probable" : "Victoire la plus probable"}
+            </span>
+            <span className="text-lg font-bold text-ink">
+              {pick.isDraw ? "Match nul" : displayTeamName(pick.team)}{" "}
+              <span className="tnum text-edge">{pct(pick.prob, 0)}</span>
+            </span>
+          </div>
+          {row.bestEdge && (
+            <Badge tone="edge" className="shrink-0">
+              +{pct(row.bestEdge.edge)} vs marché
+            </Badge>
+          )}
+        </div>
+
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -205,28 +229,29 @@ function MatchCard({ row }: { row: ScanRow }) {
               </Badge>
               <Badge tone="neutral">{compLabel}</Badge>
             </div>
-            <h3 className="text-lg font-bold tracking-tight sm:text-xl">
-              <span className="text-ink">{displayTeamName(row.fixture.home)}</span>
-              <span className="mx-2 font-medium text-muted">vs</span>
-              <span className="text-ink">{displayTeamName(row.fixture.away)}</span>
+            <h3 className="text-base font-semibold tracking-tight text-muted">
+              <span>{displayTeamName(row.fixture.home)}</span>
+              <span className="mx-2">vs</span>
+              <span>{displayTeamName(row.fixture.away)}</span>
             </h3>
           </div>
-
-          {row.bestEdge ? (
-            <Badge tone="edge" className="shrink-0">
-              +{pct(row.bestEdge.edge)} d&apos;avantage
-            </Badge>
-          ) : row.market ? (
-            <Badge className="shrink-0">Aligné</Badge>
-          ) : (
-            <Badge tone="warn" className="shrink-0">
-              Sans cotes
+          {!row.bestEdge && (
+            <Badge tone={row.market ? "neutral" : "warn"} className="shrink-0">
+              {row.market ? "Aligné marché" : "Sans cotes"}
             </Badge>
           )}
         </div>
 
         <Recommendation row={row} />
-        <ComparisonTable row={row} />
+
+        <details className="group">
+          <summary className="cursor-pointer text-sm font-semibold text-muted hover:text-ink">
+            Comparaison détaillée modèle / marché
+          </summary>
+          <div className="mt-3">
+            <ComparisonTable row={row} />
+          </div>
+        </details>
 
         <details className="group border-t border-line/50 pt-4">
           <summary className="cursor-pointer text-sm font-semibold text-muted hover:text-ink">
@@ -298,7 +323,7 @@ function MatchCard({ row }: { row: ScanRow }) {
   );
 }
 
-export function ScanTable({ rows }: { rows: ScanRow[] }) {
+export function ScanTable({ rows, sortMode = "faciles" }: { rows: ScanRow[]; sortMode?: SortMode }) {
   if (rows.length === 0) {
     return (
       <Card>
@@ -316,6 +341,20 @@ export function ScanTable({ rows }: { rows: ScanRow[] }) {
           </Link>
         </CardContent>
       </Card>
+    );
+  }
+
+  const ranked = sortMode !== "date";
+
+  if (ranked) {
+    return (
+      <ul className="flex flex-col gap-3">
+        {rows.map((row, i) => (
+          <li key={row.fixture.id}>
+            <MatchCard row={row} rank={i + 1} />
+          </li>
+        ))}
+      </ul>
     );
   }
 

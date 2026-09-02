@@ -18,7 +18,8 @@
     "ingest:fixtures": "tsx scripts/ingest-fixtures.ts",
     "ingest:odds": "tsx scripts/ingest-odds.ts",
     "ingest:daily": "npm run ingest:market",
-    "build:models": "tsx scripts/build-models.ts"
+    "build:models": "tsx scripts/build-models.ts",
+    "build:scan": "tsx scripts/build-scan.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",

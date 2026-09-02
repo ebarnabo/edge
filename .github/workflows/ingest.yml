@@ -73,6 +73,12 @@ jobs:
           EDGE_ALLOW_MODEL_BUILD: "true"
         run: npm run build:models
 
+      - name: Pré-calculer le scan matchs à venir
+        if: contains(fromJSON('["market","all"]'), steps.pick.outputs.target)
+        env:
+          EDGE_ALLOW_MODEL_BUILD: "true"
+        run: npm run build:scan
+
       - name: Enregistrer les données
         env:
           TARGET: ${{ steps.pick.outputs.target }}

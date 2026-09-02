@@ -1,0 +1,157 @@
+"use client";
+
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { ScanTable } from "@/components/sports/scan-table";
+import { ScanFilters, type ScanFilterState } from "@/components/sports/scan-filters";
+import { CompetitionFilter } from "@/components/sports/competition-filter";
+import { EmptyState } from "@/components/empty-state";
+import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
+import { Stat } from "@/components/ui/stat";
+import { applyScanParams, type ScanRowBase } from "@/lib/sports/scan-types";
+import { processScanRows } from "@/lib/sports/filter-rows";
+import { formatFreshness } from "@/lib/sports/display";
+import { num } from "@/lib/utils";
+
+const DEFAULT_STATE: ScanFilterState = {
+  query: "",
+  view: "all",
+  sort: "faciles",
+  minProb: 0,
+  bankroll: 100,
+  threshold: 0.03,
+  competition: null,
+};
+
+function ScanSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="h-44 animate-pulse rounded-[20px] border border-line/40 bg-subtle" />
+      ))}
+    </div>
+  );
+}
+
+function ScanPageInner({ competitionCodes }: { competitionCodes: string[] }) {
+  const [baseRows, setBaseRows] = useState<ScanRowBase[] | null>(null);
+  const [meta, setMeta] = useState<{
+    fixturesUpdatedAt: string | null;
+    oddsUpdatedAt: string | null;
+    fromCache: boolean;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState<ScanFilterState>(DEFAULT_STATE);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/sports/scan");
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error ?? "Erreur de chargement");
+        if (cancelled) return;
+        setBaseRows(json.rows);
+        setMeta({
+          fixturesUpdatedAt: json.fixturesUpdatedAt,
+          oddsUpdatedAt: json.oddsUpdatedAt,
+          fromCache: json.fromCache,
+        });
+      } catch (e) {
+        if (!cancelled) setError((e as Error).message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const rows = useMemo(() => {
+    if (!baseRows) return [];
+    const valued = applyScanParams(baseRows, {
+      bankroll: filters.bankroll,
+      threshold: filters.threshold,
+    });
+    return processScanRows(valued, {
+      query: filters.query,
+      view: filters.view,
+      sort: filters.sort,
+      minProb: filters.minProb,
+      competition: filters.competition,
+    });
+  }, [baseRows, filters]);
+
+  const patchFilters = useCallback((patch: Partial<ScanFilterState>) => {
+    setFilters((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  const withOdds = rows.filter((r) => r.market).length;
+  const opportunities = rows.filter((r) => r.bestEdge).length;
+
+  return (
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title="Matchs à venir"
+        description="Repère les victoires les plus probables ou les écarts intéressants. Filtres instantanés, sans rechargement."
+        link={{ href: "/sports", label: "Modèles et validation →" }}
+      />
+
+      <Card>
+        <CardContent className="flex flex-col gap-6">
+          <CompetitionFilter
+            codes={competitionCodes}
+            active={filters.competition}
+            onSelect={(c) => patchFilters({ competition: c })}
+          />
+
+          <ScanFilters state={filters} onChange={patchFilters} />
+
+          <div className="grid gap-6 border-t border-line/50 pt-6 sm:grid-cols-2 lg:grid-cols-4">
+            <Stat label="Matchs affichés" value={loading ? "…" : num(rows.length)} />
+            <Stat label="Avec cotes" value={loading ? "…" : num(withOdds)} />
+            <Stat
+              label="Opportunités"
+              value={loading ? "…" : num(opportunities)}
+              tone={opportunities > 0 ? "edge" : "default"}
+            />
+            <Stat
+              label="Données"
+              value={loading ? "…" : meta?.fromCache ? "Prêtes" : "Calculées"}
+              hint={
+                meta
+                  ? `Calendrier ${formatFreshness(meta.fixturesUpdatedAt)} · cotes ${formatFreshness(meta.oddsUpdatedAt)}`
+                  : undefined
+              }
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {error && (
+        <EmptyState title="Impossible de charger les matchs" hint={error} command="npm run build:scan" />
+      )}
+
+      {loading && <ScanSkeleton />}
+
+      {!loading && !error && rows.length === 0 && (
+        <EmptyState
+          title="Aucun match pour ces critères"
+          hint="Baisse la probabilité minimum, essaie « Paris faciles » ou retire la recherche."
+        />
+      )}
+
+      {!loading && !error && rows.length > 0 && <ScanTable rows={rows} sortMode={filters.sort} />}
+    </div>
+  );
+}
+
+export function ScanPageClient({ competitionCodes }: { competitionCodes: string[] }) {
+  return (
+    <Suspense fallback={<ScanSkeleton />}>
+      <ScanPageInner competitionCodes={competitionCodes} />
+    </Suspense>
+  );
+}
