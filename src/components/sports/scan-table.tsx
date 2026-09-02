@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { ScanRow } from "@/lib/sports/scan";
@@ -174,6 +175,18 @@ function ComparisonTable({ row }: { row: ScanRow }) {
   );
 }
 
+function detailHref(row: ScanRow): Route {
+  const params = new URLSearchParams();
+  if (row.fixture.sport === "nba") {
+    params.set("tab", "nba");
+  } else {
+    params.set("c", row.fixture.competition);
+  }
+  params.set("home", row.fixture.home);
+  params.set("away", row.fixture.away);
+  return `/sports?${params.toString()}` as Route;
+}
+
 function MatchCard({ row }: { row: ScanRow }) {
   const time = formatMatchTime(row.fixture.commenceTime);
   const compLabel =
@@ -273,6 +286,13 @@ function MatchCard({ row }: { row: ScanRow }) {
             )}
           </div>
         </details>
+
+        <Link
+          href={detailHref(row)}
+          className="text-sm font-semibold text-edge underline-offset-4 hover:underline"
+        >
+          Analyser ce match en détail →
+        </Link>
       </CardContent>
     </Card>
   );
