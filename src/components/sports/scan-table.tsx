@@ -11,6 +11,7 @@ import {
   formatMatchTime,
 } from "@/lib/sports/display";
 import { groupRowsByDate, pickSummary, type SortMode } from "@/lib/sports/filter-rows";
+import { StaggerList } from "@/components/motion/gsap-motion";
 import { eur, pct } from "@/lib/utils";
 
 const VERDICT_LABELS = {
@@ -323,7 +324,15 @@ function MatchCard({ row, rank }: { row: ScanRow; rank?: number }) {
   );
 }
 
-export function ScanTable({ rows, sortMode = "faciles" }: { rows: ScanRow[]; sortMode?: SortMode }) {
+export function ScanTable({
+  rows,
+  sortMode = "faciles",
+  animKey,
+}: {
+  rows: ScanRow[];
+  sortMode?: SortMode;
+  animKey?: string | number;
+}) {
   if (rows.length === 0) {
     return (
       <Card>
@@ -348,32 +357,30 @@ export function ScanTable({ rows, sortMode = "faciles" }: { rows: ScanRow[]; sor
 
   if (ranked) {
     return (
-      <ul className="flex flex-col gap-3">
+      <StaggerList resetKey={animKey} className="flex flex-col gap-3">
         {rows.map((row, i) => (
-          <li key={row.fixture.id}>
+          <div key={row.fixture.id} data-animate-item>
             <MatchCard row={row} rank={i + 1} />
-          </li>
+          </div>
         ))}
-      </ul>
+      </StaggerList>
     );
   }
 
   const groups = groupRowsByDate(rows);
 
   return (
-    <div className="flex flex-col gap-8">
+    <StaggerList resetKey={animKey} className="flex flex-col gap-8">
       {groups.map(({ date, rows: dayRows }) => (
-        <section key={date} className="flex flex-col gap-4">
+        <section key={date} data-animate-item className="flex flex-col gap-4">
           <h2 className="text-label">{formatDayHeader(date)}</h2>
-          <ul className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             {dayRows.map((row) => (
-              <li key={row.fixture.id}>
-                <MatchCard row={row} />
-              </li>
+              <MatchCard key={row.fixture.id} row={row} />
             ))}
-          </ul>
+          </div>
         </section>
       ))}
-    </div>
+    </StaggerList>
   );
 }

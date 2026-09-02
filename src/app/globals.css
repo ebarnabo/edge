@@ -47,6 +47,41 @@ html {
   color-scheme: light;
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
+/* Mode sombre — Notion dark */
+html.dark {
+  --color-canvas: #191919;
+  --color-surface: #202020;
+  --color-sidebar: #202020;
+  --color-subtle: #2a2a2a;
+  --color-raised: #363636;
+  --color-hover: rgb(255 255 255 / 0.055);
+  --color-line: rgb(255 255 255 / 0.09);
+  --color-ink: rgb(255 255 255 / 0.9);
+  --color-muted: rgb(255 255 255 / 0.65);
+  --color-faint: rgb(255 255 255 / 0.45);
+  --color-accent: #529cca;
+  --color-accent-soft: rgb(82 156 202 / 0.18);
+  --color-edge: #529cca;
+  --color-loto: #e9973f;
+  --color-euro: #a882ff;
+  --color-dream: #e564a0;
+  --color-warn: #ff7369;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.2);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.15);
+}
+
+html.dark .data-table tbody tr:nth-child(even) {
+  background: rgb(255 255 255 / 0.03);
+}
+
 body {
   background: var(--color-canvas);
   color: var(--color-ink);

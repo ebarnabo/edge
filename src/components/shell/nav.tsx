@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalendarClock, Dices, Gauge, LineChart, Wallet } from "lucide-react";
+import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -56,10 +57,18 @@ export function Nav() {
           ))}
         </ul>
 
-        <p className="mt-auto px-2 text-[11px] leading-relaxed text-faint">
-          Jeu responsable · joueurs-info-service.fr · 09 74 75 13 13
-        </p>
+        <div className="mt-auto flex flex-col gap-2 px-1">
+          <ThemeToggle className="w-full justify-start" />
+          <p className="px-1 text-[11px] leading-relaxed text-faint">
+            Jeu responsable · joueurs-info-service.fr · 09 74 75 13 13
+          </p>
+        </div>
       </nav>
+
+      {/* Toggle thème mobile */}
+      <div className="fixed top-3 right-3 z-50 lg:hidden">
+        <ThemeToggle className="border border-line bg-surface shadow-sm" />
+      </div>
 
       {/* Barre mobile */}
       <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-surface lg:hidden">

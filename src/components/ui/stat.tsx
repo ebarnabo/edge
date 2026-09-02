@@ -1,3 +1,4 @@
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export function Stat({
@@ -8,7 +9,7 @@ export function Stat({
   className,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   hint?: string;
   tone?: "default" | "edge" | "accent" | "warn" | "loto";
   className?: string;

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from
 import { Search, X } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import type { SortMode, ViewFilter } from "@/lib/sports/filter-rows";
+import type { DayFilter, SortMode, ViewFilter } from "@/lib/sports/filter-rows";
 
 const VIEWS: { id: ViewFilter; label: string; hint: string }[] = [
   { id: "all", label: "Tous", hint: "Tous les matchs" },
@@ -27,6 +27,7 @@ export interface ScanFilterState {
   bankroll: number;
   threshold: number;
   competition: string | null;
+  day: DayFilter;
 }
 
 export function ScanFilters({

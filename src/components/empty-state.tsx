@@ -10,7 +10,7 @@ export function EmptyState({
   hint: string;
 }) {
   return (
-    <Card className="border-warn/20 bg-red-50/30">
+    <Card className="border-warn/20 bg-warn/5">
       <CardContent className="flex flex-col gap-3">
         <h2 className="text-base font-semibold text-ink">{title}</h2>
         <p className="max-w-[60ch] text-sm leading-relaxed text-muted">{hint}</p>

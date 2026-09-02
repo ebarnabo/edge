@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
+import { MotionPage } from "@/components/motion/motion-page";
 import { GAMES } from "@/lib/fdj/games";
 import { totalCombinations, rankTable } from "@/lib/loto/probability";
 import { loadDraws } from "@/lib/data";
@@ -13,6 +14,7 @@ export default async function Home() {
   const rank1 = rankTable(loto)[0];
 
   return (
+    <MotionPage>
     <div className="flex flex-col gap-10">
       <PageHeader
         eyebrow="Analyse probabiliste"
@@ -88,6 +90,7 @@ export default async function Home() {
         Aide gratuite : joueurs-info-service.fr — 09 74 75 13 13.
       </p>
     </div>
+    </MotionPage>
   );
 }
 
