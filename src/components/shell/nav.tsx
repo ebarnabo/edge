@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalendarClock, Dices, Gauge, LineChart, Wallet } from "lucide-react";
+import { MobileDock } from "@/components/shell/mobile-dock";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +26,7 @@ export function Nav() {
 
   return (
     <>
-      {/* Sidebar desktop — style Notion */}
+      {/* Sidebar desktop */}
       <nav className="glass-surface fixed top-0 left-0 hidden h-dvh w-[240px] flex-col border-r border-line bg-sidebar p-3 lg:flex">
         <Link href="/" className="mb-4 flex items-center gap-2 rounded-[var(--radius-card)] px-2 py-2 hover:bg-hover">
           <span className="flex size-7 items-center justify-center rounded-[var(--radius-card)] bg-accent text-xs font-bold text-white">
@@ -58,38 +59,22 @@ export function Nav() {
         </ul>
 
         <div className="mt-auto flex flex-col gap-2 px-1">
-          <ThemeToggle className="w-full justify-start" />
+          <div className="flex items-center gap-2 px-0.5">
+            <ThemeToggle />
+            <span className="text-xs text-muted">Thème</span>
+          </div>
           <p className="px-1 text-[11px] leading-relaxed text-faint">
             Jeu responsable · joueurs-info-service.fr · 09 74 75 13 13
           </p>
         </div>
       </nav>
 
-      {/* Toggle thème mobile */}
+      {/* Toggle thème mobile — hors dock pour la transition circulaire */}
       <div className="fixed top-3 right-3 z-50 lg:hidden">
-        <ThemeToggle className="border border-line bg-surface shadow-sm" />
+        <ThemeToggle className="glass-surface border border-line bg-surface shadow-sm" />
       </div>
 
-      {/* Barre mobile */}
-      <nav className="glass-surface fixed inset-x-0 bottom-0 z-50 border-t border-line bg-surface lg:hidden">
-        <ul className="mx-auto flex max-w-lg items-stretch px-1 pt-1 pb-[max(6px,env(safe-area-inset-bottom))]">
-          {LINKS.map(({ href, short, icon: Icon }) => (
-            <li key={href} className="min-w-0 flex-1">
-              <Link
-                href={href}
-                aria-current={active(href) ? "page" : undefined}
-                className={cn(
-                  "flex h-14 flex-col items-center justify-center gap-0.5 rounded-[var(--radius-card)] px-0.5 text-[10px] font-medium transition-colors",
-                  active(href) ? "text-accent" : "text-faint",
-                )}
-              >
-                <Icon className="size-[18px] shrink-0" strokeWidth={1.75} />
-                <span className="w-full truncate text-center">{short}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <MobileDock />
     </>
   );
 }

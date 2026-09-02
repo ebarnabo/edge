@@ -15,6 +15,7 @@ const button = cva(
         edge: "bg-accent text-white hover:bg-accent/90",
         outline: "border border-line bg-surface text-ink hover:bg-hover",
         ghost: "text-muted hover:bg-hover hover:text-ink",
+        link: "h-auto p-0 text-accent underline-offset-4 hover:underline",
       },
       size: {
         sm: "h-7 px-3 text-xs",
@@ -37,3 +38,5 @@ export function Button({
   const Comp = asChild ? Slot : "button";
   return <Comp className={cn(button({ variant, size }), className)} {...props} />;
 }
+
+export { button as buttonVariants };

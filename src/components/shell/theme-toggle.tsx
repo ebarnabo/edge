@@ -1,28 +1,23 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "@/components/shell/theme-provider";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle({ className }: { className?: string }) {
-  const { theme, toggle } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
+    <AnimatedThemeToggler
+      theme={theme}
+      onThemeChange={setTheme}
+      variant="circle"
+      duration={450}
       className={cn(
-        "flex items-center gap-2 rounded-[var(--radius-card)] px-2.5 py-1.5 text-sm text-muted transition-colors hover:bg-hover hover:text-ink",
+        "flex size-9 items-center justify-center rounded-[var(--radius-card)] text-muted transition-colors hover:bg-hover hover:text-ink [&_svg]:size-[18px]",
         className,
       )}
       aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
-    >
-      {theme === "dark" ? (
-        <Sun className="size-[18px]" strokeWidth={1.75} />
-      ) : (
-        <Moon className="size-[18px]" strokeWidth={1.75} />
-      )}
-      <span className="hidden xl:inline">{theme === "dark" ? "Clair" : "Sombre"}</span>
-    </button>
+    />
   );
 }
