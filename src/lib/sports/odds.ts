@@ -150,7 +150,7 @@ export function valueAgainstMarket(
     const o = market.outcomes[i];
     const reference = o.sharp ?? o.consensus;
     const edge = v.modelProb - reference;
-    const threshold = opts.threshold ?? 0.02;
+    const threshold = opts.threshold ?? 0.03;
 
     return {
       ...v,

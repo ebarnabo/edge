@@ -66,7 +66,7 @@ export function devig(selections: Selection[]): number[] {
 
 export function evaluate(
   selections: Selection[],
-  { bankroll, kellyFraction = 0.25, threshold = 0.02 }: ValueOptions,
+  { bankroll, kellyFraction = 0.25, threshold = 0.03 }: ValueOptions,
 ): ValuedSelection[] {
   const fair = devig(selections);
 
