@@ -30,7 +30,7 @@ export function MobileDock() {
         disableMagnification
         direction="bottom"
         className={cn(
-          "glass-surface pointer-events-auto mt-0 h-[52px] gap-1 border-line bg-surface/90 px-2 shadow-md",
+          "glass-surface pointer-events-auto mt-0 h-[52px] gap-1 border-line bg-surface/95 px-2 elevated",
           "supports-backdrop-blur:bg-surface/75",
         )}
         iconSize={36}

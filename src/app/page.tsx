@@ -27,7 +27,7 @@ export default async function Home() {
           rank1OddsLabel={num(Math.round(rank1.odds))}
         />
 
-        <p className="rounded-[var(--radius-card)] border border-line bg-subtle px-4 py-3 text-sm leading-relaxed text-muted">
+        <p className="elevated rounded-[var(--radius-card)] border border-line bg-surface px-4 py-3 text-sm leading-relaxed text-muted">
           Les jeux d&apos;argent comportent des risques. Sur la durée, la mise moyenne ne revient pas.
           Aide gratuite : joueurs-info-service.fr — 09 74 75 13 13.
         </p>

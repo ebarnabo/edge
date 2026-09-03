@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function PageHeader({
@@ -16,24 +17,26 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={cn("mb-2 flex flex-col gap-2 pb-6", className)}>
-      {eyebrow && <span className="text-label">{eyebrow}</span>}
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-[2rem] font-bold leading-tight tracking-tight text-balance text-ink sm:text-[2.25rem]">
+    <header className={cn("mb-2 flex flex-col gap-3 pb-8", className)}>
+      {eyebrow ? <span className="eyebrow-pill w-fit">{eyebrow}</span> : null}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <h1 className="max-w-[20ch] text-[2rem] font-bold leading-[1.1] tracking-tight text-balance text-ink sm:text-[2.35rem]">
           {title}
         </h1>
-        {link && (
+        {link ? (
           <Link
             href={link.href}
-            className="text-sm font-medium text-accent underline-offset-2 hover:underline"
+            className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-accent hover:underline"
           >
             {link.label}
+            <ArrowUpRight className="size-3.5" aria-hidden />
           </Link>
-        )}
+        ) : null}
       </div>
-      {description && (
-        <p className="max-w-[68ch] text-[15px] leading-relaxed text-muted">{description}</p>
-      )}
+      {description ? (
+        <p className="max-w-[62ch] text-[15px] leading-relaxed text-muted">{description}</p>
+      ) : null}
+      <div className="h-px w-full bg-linear-to-r from-line via-accent/30 to-transparent" aria-hidden />
     </header>
   );
 }

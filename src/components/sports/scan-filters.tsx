@@ -64,7 +64,7 @@ export function ScanFilters({
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="PSG, Real Madrid, Lakers…"
-            className="h-12 w-full rounded-[14px] border border-line/60 bg-subtle pr-10 pl-11 text-sm font-medium text-ink placeholder:text-faint"
+            className="input-field pr-10 pl-11"
           />
           {search && (
             <button
@@ -101,12 +101,7 @@ export function ScanFilters({
                   sort: v.id === "faciles" ? "faciles" : v.id === "value" ? "opportunites" : state.sort,
                 })
               }
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
-                state.view === v.id
-                  ? "border-accent/30 bg-accent-soft text-accent"
-                  : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
-              )}
+              className={cn("chip", state.view === v.id && "chip-active")}
             >
               <Icon className="size-3.5 shrink-0 opacity-80" aria-hidden />
               {v.label}
@@ -149,12 +144,7 @@ export function ScanFilters({
               key={s.id}
               type="button"
               onClick={() => onChange({ sort: s.id })}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-semibold transition-colors",
-                state.sort === s.id
-                  ? "border-accent/30 bg-accent-soft text-accent"
-                  : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
-              )}
+              className={cn("chip", state.sort === s.id && "chip-active")}
             >
               <Icon className="size-3.5 shrink-0 opacity-80" aria-hidden />
               {s.label}
@@ -178,7 +168,7 @@ export function ScanFilters({
               step={10}
               value={state.bankroll}
               onChange={(e) => onChange({ bankroll: Math.max(10, Number(e.target.value) || 100) })}
-              className="tnum h-11 rounded-[14px] border border-line/60 bg-subtle px-4 text-sm font-semibold text-ink"
+              className="input-field tnum"
             />
           </label>
           <div className="flex flex-col gap-2">

@@ -14,32 +14,59 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTheme } from "@/components/shell/theme-provider";
 
-const AXIS = { stroke: "rgb(55 53 47 / 0.45)", fontSize: 11 };
-const GRID = "rgb(55 53 47 / 0.08)";
-
-const TOOLTIP = {
-  contentStyle: {
-    background: "#ffffff",
-    border: "1px solid rgb(55 53 47 / 0.09)",
-    borderRadius: 6,
-    padding: "10px 14px",
-    fontSize: 13,
-    color: "#37352f",
-    boxShadow: "0 4px 12px rgb(15 15 15 / 0.08)",
-  },
-  labelStyle: { color: "rgb(55 53 47 / 0.65)", marginBottom: 6 },
-  itemStyle: { color: "#37352f" },
-} as const;
-
-export const SERIES_COLORS = [
-  "#2383e2",
+export const SERIES_COLORS_LIGHT = [
+  "#2563eb",
   "#d97706",
   "#7c3aed",
   "#db2777",
   "#dc2626",
-  "rgb(55 53 47 / 0.45)",
+  "rgb(26 26 31 / 0.45)",
 ];
+
+export const SERIES_COLORS_DARK = [
+  "#60a5fa",
+  "#fbbf24",
+  "#c4b5fd",
+  "#f472b6",
+  "#f87171",
+  "rgb(250 250 252 / 0.45)",
+];
+
+function useChartTheme() {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+
+  return {
+    dark,
+    axis: { stroke: dark ? "rgb(250 250 252 / 0.4)" : "rgb(26 26 31 / 0.45)", fontSize: 11 },
+    grid: dark ? "rgb(255 255 255 / 0.06)" : "rgb(26 26 31 / 0.08)",
+    tooltip: {
+      contentStyle: {
+        background: dark ? "#141418" : "#ffffff",
+        border: dark ? "1px solid rgb(255 255 255 / 0.1)" : "1px solid rgb(26 26 31 / 0.1)",
+        borderRadius: 12,
+        padding: "10px 14px",
+        fontSize: 13,
+        color: dark ? "rgb(250 250 252 / 0.94)" : "#1a1a1f",
+        boxShadow: dark ? "0 8px 24px rgb(0 0 0 / 0.45)" : "0 4px 16px rgb(15 15 20 / 0.08)",
+      },
+      labelStyle: {
+        color: dark ? "rgb(250 250 252 / 0.55)" : "rgb(26 26 31 / 0.62)",
+        marginBottom: 6,
+      },
+      itemStyle: { color: dark ? "rgb(250 250 252 / 0.94)" : "#1a1a1f" },
+    },
+    legend: dark ? "rgb(250 250 252 / 0.55)" : "rgb(26 26 31 / 0.62)",
+    reference: dark ? "rgb(255 255 255 / 0.25)" : "rgb(26 26 31 / 0.35)",
+    perfect: dark ? "rgb(255 255 255 / 0.2)" : "rgb(26 26 31 / 0.25)",
+    barMuted: dark ? "rgb(255 255 255 / 0.12)" : "rgb(26 26 31 / 0.12)",
+    cursor: dark ? "rgb(255 255 255 / 0.04)" : "rgb(26 26 31 / 0.04)",
+    accentFill: dark ? "#60a5fa" : "#2563eb",
+    colors: dark ? SERIES_COLORS_DARK : SERIES_COLORS_LIGHT,
+  };
+}
 
 interface Series {
   key: string;
@@ -48,7 +75,6 @@ interface Series {
   dashed?: boolean;
 }
 
-/** Courbe de tendance générique : plusieurs séries sur un axe temporel. */
 export function TrendChart({
   data,
   series,
@@ -61,48 +87,44 @@ export function TrendChart({
   series: Series[];
   height?: number;
   yLabel?: string;
-  /** Bande de tolérance horizontale, par exemple ±2 écarts-types */
   band?: { from: number; to: number };
   reference?: { value: number; label: string };
 }) {
+  const t = useChartTheme();
+
   return (
     <div style={{ height }} className="w-full max-sm:!h-[240px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
-          <CartesianGrid stroke={GRID} strokeDasharray="2 6" vertical={false} />
-          <XAxis dataKey="label" tick={AXIS} tickLine={false} axisLine={false} minTickGap={40} />
+          <CartesianGrid stroke={t.grid} strokeDasharray="2 6" vertical={false} />
+          <XAxis dataKey="label" tick={t.axis} tickLine={false} axisLine={false} minTickGap={40} />
           <YAxis
-            tick={AXIS}
+            tick={t.axis}
             tickLine={false}
             axisLine={false}
             width={56}
             label={
               yLabel
-                ? { value: yLabel, angle: -90, position: "insideLeft", fill: AXIS.stroke, fontSize: 11 }
+                ? { value: yLabel, angle: -90, position: "insideLeft", fill: t.axis.stroke, fontSize: 11 }
                 : undefined
             }
           />
-          {band && (
-            <ReferenceArea
-              y1={band.from}
-              y2={band.to}
-              fill="#2383e2"
-              fillOpacity={0.1}
-            />
-          )}
-          {reference && (
+          {band ? (
+            <ReferenceArea y1={band.from} y2={band.to} fill={t.accentFill} fillOpacity={0.12} />
+          ) : null}
+          {reference ? (
             <ReferenceLine
               y={reference.value}
-              stroke="rgb(55 53 47 / 0.35)"
+              stroke={t.reference}
               strokeDasharray="6 6"
-              label={{ value: reference.label, fill: AXIS.stroke, fontSize: 11, position: "right" }}
+              label={{ value: reference.label, fill: t.axis.stroke, fontSize: 11, position: "right" }}
             />
-          )}
-          <Tooltip {...TOOLTIP} />
+          ) : null}
+          <Tooltip {...t.tooltip} />
           <Legend
             iconType="plainline"
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "rgb(55 53 47 / 0.65)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: t.legend }}>{v}</span>}
           />
           {series.map((s, i) => (
             <Line
@@ -110,7 +132,7 @@ export function TrendChart({
               type="monotone"
               dataKey={s.key}
               name={s.label}
-              stroke={s.color ?? SERIES_COLORS[i % SERIES_COLORS.length]}
+              stroke={s.color ?? t.colors[i % t.colors.length]}
               strokeWidth={s.dashed ? 1.5 : 2.5}
               strokeDasharray={s.dashed ? "5 5" : undefined}
               dot={false}
@@ -123,7 +145,6 @@ export function TrendChart({
   );
 }
 
-/** Diagramme de fiabilité : probabilité annoncée contre fréquence observée. */
 export function CalibrationChart({
   data,
   height = 300,
@@ -131,6 +152,7 @@ export function CalibrationChart({
   data: { predicted: number; observed: number; count: number }[];
   height?: number;
 }) {
+  const t = useChartTheme();
   const points = data.map((d) => ({
     label: `${Math.round(d.predicted * 100)}%`,
     predit: d.predicted * 100,
@@ -143,20 +165,20 @@ export function CalibrationChart({
     <div style={{ height }} className="w-full max-sm:!h-[240px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={points} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
-          <CartesianGrid stroke={GRID} strokeDasharray="2 6" vertical={false} />
-          <XAxis dataKey="label" tick={AXIS} tickLine={false} axisLine={false} />
-          <YAxis tick={AXIS} tickLine={false} axisLine={false} width={48} unit="%" />
-          <Tooltip {...TOOLTIP} />
+          <CartesianGrid stroke={t.grid} strokeDasharray="2 6" vertical={false} />
+          <XAxis dataKey="label" tick={t.axis} tickLine={false} axisLine={false} />
+          <YAxis tick={t.axis} tickLine={false} axisLine={false} width={48} unit="%" />
+          <Tooltip {...t.tooltip} />
           <Legend
             iconType="plainline"
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "rgb(55 53 47 / 0.65)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: t.legend }}>{v}</span>}
           />
           <Line
             type="monotone"
             dataKey="parfait"
             name="Calibration parfaite"
-            stroke="rgb(55 53 47 / 0.25)"
+            stroke={t.perfect}
             strokeDasharray="5 5"
             strokeWidth={1.5}
             dot={false}
@@ -166,7 +188,7 @@ export function CalibrationChart({
             type="monotone"
             dataKey="observe"
             name="Fréquence observée"
-            stroke={SERIES_COLORS[0]}
+            stroke={t.colors[0]}
             strokeWidth={2.5}
             dot={{ r: 3 }}
             isAnimationActive={false}
@@ -177,7 +199,6 @@ export function CalibrationChart({
   );
 }
 
-/** Histogramme comparant une distribution observée à sa loi exacte. */
 export function DistributionChart({
   data,
   height = 280,
@@ -185,24 +206,28 @@ export function DistributionChart({
   data: { sum: number; observed: number; expected: number }[];
   height?: number;
 }) {
+  const t = useChartTheme();
   const points = data.map((d) => ({ label: String(d.sum), observé: d.observed, attendu: d.expected }));
 
   return (
     <div style={{ height }} className="w-full max-sm:!h-[240px]">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={points} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
-          <CartesianGrid stroke={GRID} strokeDasharray="2 6" vertical={false} />
-          <XAxis dataKey="label" tick={AXIS} tickLine={false} axisLine={false} />
-          <YAxis tick={AXIS} tickLine={false} axisLine={false} width={48} />
-          <Tooltip {...TOOLTIP} cursor={{ fill: "rgb(55 53 47 / 0.04)" }} />
+          <CartesianGrid stroke={t.grid} strokeDasharray="2 6" vertical={false} />
+          <XAxis dataKey="label" tick={t.axis} tickLine={false} axisLine={false} />
+          <YAxis tick={t.axis} tickLine={false} axisLine={false} width={48} />
+          <Tooltip {...t.tooltip} cursor={{ fill: t.cursor }} />
           <Legend
             wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
-            formatter={(v) => <span style={{ color: "rgb(55 53 47 / 0.65)" }}>{v}</span>}
+            formatter={(v) => <span style={{ color: t.legend }}>{v}</span>}
           />
-          <Bar dataKey="attendu" fill="rgb(55 53 47 / 0.15)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
-          <Bar dataKey="observé" fill={SERIES_COLORS[1]} radius={[6, 6, 0, 0]} isAnimationActive={false} />
+          <Bar dataKey="attendu" fill={t.barMuted} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+          <Bar dataKey="observé" fill={t.colors[1]} radius={[6, 6, 0, 0]} isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
+
+/** @deprecated Utiliser SERIES_COLORS_LIGHT ou useChartTheme */
+export const SERIES_COLORS = SERIES_COLORS_LIGHT;

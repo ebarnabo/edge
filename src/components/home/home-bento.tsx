@@ -10,7 +10,6 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function HomeBento({
@@ -25,30 +24,30 @@ export function HomeBento({
   rank1OddsLabel: string;
 }) {
   return (
-    <div className="grid auto-rows-[minmax(11rem,auto)] grid-cols-3 gap-4 md:auto-rows-[18rem]">
+    <div className="grid auto-rows-[minmax(11rem,auto)] grid-cols-1 gap-4 md:grid-cols-3 md:auto-rows-[17rem]">
       <BentoTile
         name="Tirages FDJ"
         description="TRJ, espérance de gain et tests d'uniformité sur l'historique officiel."
         href="/loto"
         cta="Voir les probabilités"
         Icon={Dices}
-        className="col-span-3 lg:col-span-2"
+        className="md:col-span-2"
         accent="loto"
         highlight={
           <>
             <span className="text-label text-loto">TRJ Loto</span>
-            <span className="tnum text-4xl font-bold text-loto">{trjLabel}</span>
+            <span className="tnum text-4xl font-bold tracking-tight text-loto">{trjLabel}</span>
           </>
         }
       />
 
       <BentoTile
         name="Modèles sport"
-        description="Dixon–Coles, Elo NBA et confrontation systématique au marché des cotes."
+        description="Dixon–Coles, Elo NBA et confrontation systématique au marché."
         href="/sports"
         cta="Ouvrir les modèles"
         Icon={LineChart}
-        className="col-span-3 lg:col-span-1"
+        className="md:col-span-1"
         accent="accent"
       />
 
@@ -56,43 +55,37 @@ export function HomeBento({
         name="Test d'uniformité"
         description={
           drawCount
-            ? `χ² sur ${drawCount.toLocaleString("fr-FR")} tirages Loto importés.`
+            ? `χ² sur ${drawCount.toLocaleString("fr-FR")} tirages importés.`
             : "χ² sur l'historique officiel FDJ."
         }
         Icon={ShieldCheck}
-        className="col-span-3 md:col-span-1"
       />
       <FeatureTile
         name="Espérance de gain"
         description={`Rang 1 : 1 chance sur ${rank1OddsLabel}.`}
         Icon={Calculator}
-        className="col-span-3 md:col-span-1"
       />
       <FeatureTile
         name="Systèmes réducteurs"
         description="Le plus petit nombre de grilles pour une garantie donnée."
         Icon={BarChart3}
-        className="col-span-3 md:col-span-1"
       />
       <FeatureTile
         name="Buts attendus"
         description="Intensités d'attaque et défense ajustées dans le temps."
         Icon={TrendingUp}
-        className="col-span-3 md:col-span-1"
         href="/sports"
       />
       <FeatureTile
         name="Écart au marché"
         description="Marge retirée, mise Kelly fractionné si value."
         Icon={TrendingUp}
-        className="col-span-3 md:col-span-1"
         href="/sports/scan"
       />
       <FeatureTile
-        name="Combinaisons Loto"
+        name="Combinaisons"
         description={`${combinationsLabel} grilles possibles au rang 1.`}
         Icon={Dices}
-        className="col-span-3 md:col-span-1"
       />
     </div>
   );
@@ -113,37 +106,38 @@ function BentoTile({
   href: string;
   cta: string;
   Icon: LucideIcon;
-  className: string;
+  className?: string;
   accent: "loto" | "accent";
   highlight?: React.ReactNode;
 }) {
-  const bg =
+  const gradient =
     accent === "loto"
-      ? "bg-linear-to-br from-loto/10 via-surface to-surface"
-      : "bg-linear-to-br from-accent/10 via-surface to-euro/5";
+      ? "from-loto/12 via-surface to-surface"
+      : "from-accent/12 via-surface to-euro/8";
 
   return (
-    <article
+    <Link
+      href={href as Route}
       className={cn(
-        "relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface",
+        "elevated elevated-hover group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface",
         className,
       )}
     >
-      <div className={cn("relative min-h-[5rem] flex-1 p-4", bg)}>
+      <div className={cn("relative min-h-[6rem] flex-1 bg-linear-to-br p-5", gradient)}>
         {highlight ? <div className="flex flex-col gap-1">{highlight}</div> : null}
       </div>
-      <div className="flex flex-col gap-2 p-4">
-        <Icon className="size-9 text-accent/80" aria-hidden />
-        <h3 className="text-lg font-semibold text-ink">{name}</h3>
+      <div className="flex flex-col gap-2.5 p-5">
+        <div className="icon-box size-10">
+          <Icon className="size-5" aria-hidden />
+        </div>
+        <h3 className="text-lg font-bold tracking-tight text-ink">{name}</h3>
         <p className="text-sm leading-relaxed text-muted">{description}</p>
-        <Button variant="link" asChild size="sm" className="h-auto justify-start p-0 text-accent">
-          <Link href={href as Route}>
-            {cta}
-            <ArrowRight className="size-3.5" aria-hidden />
-          </Link>
-        </Button>
+        <span className="inline-flex items-center gap-1 text-sm font-semibold text-accent">
+          {cta}
+          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -151,28 +145,26 @@ function FeatureTile({
   name,
   description,
   Icon,
-  className,
   href = "/loto",
 }: {
   name: string;
   description: string;
   Icon: LucideIcon;
-  className: string;
   href?: string;
 }) {
   return (
-    <article
-      className={cn(
-        "flex flex-col gap-2 rounded-[var(--radius-card)] border border-line bg-surface p-4",
-        className,
-      )}
+    <Link
+      href={href as Route}
+      className="elevated elevated-hover group flex flex-col gap-2.5 rounded-[var(--radius-card)] border border-line bg-surface p-4"
     >
-      <Icon className="size-5 text-muted" aria-hidden />
+      <div className="icon-box size-8 bg-subtle text-muted">
+        <Icon className="size-4" aria-hidden />
+      </div>
       <h3 className="text-sm font-semibold text-ink">{name}</h3>
-      <p className="text-sm leading-relaxed text-muted">{description}</p>
-      <Link href={href as Route} className="text-xs font-medium text-accent hover:underline">
-        En savoir plus →
-      </Link>
-    </article>
+      <p className="flex-1 text-sm leading-relaxed text-muted">{description}</p>
+      <span className="text-xs font-semibold text-accent opacity-0 transition-opacity group-hover:opacity-100">
+        Explorer →
+      </span>
+    </Link>
   );
 }

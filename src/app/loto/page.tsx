@@ -23,7 +23,7 @@ export default async function LotoIndex() {
         {games.map(({ game, data }) => (
           <li key={game.id}>
             <Link href={`/loto/${game.id}`} className="block h-full">
-              <Card className="h-full transition-colors hover:border-line">
+              <Card className="elevated-hover h-full">
                 <CardContent className="flex h-full flex-col gap-5">
                   <div className="flex items-start justify-between gap-4">
                     <h2 className="text-xl font-bold tracking-tight text-ink">{game.label}</h2>

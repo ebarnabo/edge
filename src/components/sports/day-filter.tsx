@@ -27,13 +27,7 @@ export function DayFilterBar({
   dates: string[];
   onChange: (day: DayFilter) => void;
 }) {
-  const chipClass = (selected: boolean) =>
-    cn(
-      "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-pill)] border px-3 py-1.5 text-sm font-medium transition-colors",
-      selected
-        ? "border-accent/30 bg-accent-soft text-accent"
-        : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
-    );
+  const chipClass = (selected: boolean) => cn("chip", selected && "chip-active");
 
   return (
     <div className="flex flex-col gap-3">

@@ -24,8 +24,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f2ff" },
-    { media: "(prefers-color-scheme: dark)", color: "#191919" },
+    { media: "(prefers-color-scheme: light)", color: "#f0eeff" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
   ],
   colorScheme: "light dark",
   width: "device-width",
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MeshBackground />
         <ThemeProvider>
           <Nav />
-          <main className="lg:pl-[240px]">
+          <main className="lg:pl-[252px]">
             <div className="mx-auto w-full max-w-[900px] px-5 pt-10 pb-24 sm:px-8 sm:pt-12 lg:pb-16">
               {children}
             </div>

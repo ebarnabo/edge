@@ -48,12 +48,7 @@ export function CompetitionFilter({
               key={item.code ?? "all"}
               type="button"
               onClick={() => onSelect(item.code)}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-sm font-semibold transition-colors",
-                active === item.code
-                  ? "border-accent/30 bg-accent-soft text-accent"
-                  : "border-line bg-surface text-muted hover:bg-hover hover:text-ink",
-              )}
+              className={cn("chip gap-2 font-semibold", active === item.code && "chip-active")}
             >
               {item.code ? <CompetitionLogo code={item.code} size="sm" /> : null}
               {item.label}
