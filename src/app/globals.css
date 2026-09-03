@@ -107,6 +107,21 @@ html.dark .mesh-vignette {
   opacity: 0;
 }
 
+/* Points discrets en dark — CSS pur, zéro animation JS */
+.mesh-dark-dots {
+  display: none;
+}
+
+html.dark .mesh-dark-dots {
+  display: block;
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  background-image: radial-gradient(rgb(82 156 202 / 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 15%, transparent 72%);
+}
+
 html.dark ::-webkit-scrollbar-thumb {
   background: rgb(255 255 255 / 0.15);
 }
@@ -134,7 +149,6 @@ body {
   border-radius: 50%;
   filter: blur(var(--mesh-blur));
   opacity: var(--mesh-opacity);
-  will-change: transform;
 }
 
 .mesh-blob-a {

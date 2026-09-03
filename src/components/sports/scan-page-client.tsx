@@ -136,23 +136,12 @@ function ScanPageInner({ competitionCodes }: { competitionCodes: string[] }) {
             <ScanFilters state={filters} onChange={patchFilters} />
 
             <div className="grid gap-3 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat
-                icon={LayoutList}
-                label="Matchs affichés"
-                value={loading ? "…" : num(rows.length)}
-                animateValue={loading ? undefined : rows.length}
-              />
-              <Stat
-                icon={Receipt}
-                label="Avec cotes"
-                value={loading ? "…" : num(withOdds)}
-                animateValue={loading ? undefined : withOdds}
-              />
+              <Stat icon={LayoutList} label="Matchs affichés" value={loading ? "…" : num(rows.length)} />
+              <Stat icon={Receipt} label="Avec cotes" value={loading ? "…" : num(withOdds)} />
               <Stat
                 icon={Sparkles}
                 label="Opportunités"
                 value={loading ? "…" : num(opportunities)}
-                animateValue={loading ? undefined : opportunities}
                 tone={opportunities > 0 ? "accent" : "default"}
               />
               <Stat

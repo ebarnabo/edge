@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { CalendarClock, Dices, Gauge, LineChart, Wallet } from "lucide-react";
 import { MobileDock } from "@/components/shell/mobile-dock";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
+import { useMediaQuery } from "@/lib/use-media-query";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -17,6 +18,7 @@ const LINKS = [
 
 export function Nav() {
   const pathname = usePathname();
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   const active = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -69,12 +71,13 @@ export function Nav() {
         </div>
       </nav>
 
-      {/* Toggle thème mobile — hors dock pour la transition circulaire */}
-      <div className="fixed top-3 right-3 z-50 lg:hidden">
-        <ThemeToggle className="glass-surface border border-line bg-surface shadow-sm" />
-      </div>
+      {isMobile ? (
+        <div className="fixed top-3 right-3 z-50">
+          <ThemeToggle className="glass-surface border border-line bg-surface shadow-sm" />
+        </div>
+      ) : null}
 
-      <MobileDock />
+      {isMobile ? <MobileDock /> : null}
     </>
   );
 }

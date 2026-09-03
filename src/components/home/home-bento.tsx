@@ -1,8 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import type { Route } from "next";
 import {
+  ArrowRight,
   BarChart3,
   Calculator,
   Dices,
@@ -11,60 +10,49 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-import { BorderBeam } from "@/components/ui/border-beam";
-import { DotPattern } from "@/components/ui/dot-pattern";
-import { AnimatedNumber } from "@/components/ui/animated-number";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function HomeBento({
-  trjPercent,
-  combinations,
+  trjLabel,
+  combinationsLabel,
   drawCount,
-  rank1Odds,
+  rank1OddsLabel,
 }: {
-  trjPercent: number;
-  combinations: number;
+  trjLabel: string;
+  combinationsLabel: string;
   drawCount: number | null;
-  rank1Odds: number;
+  rank1OddsLabel: string;
 }) {
   return (
-    <BentoGrid className="auto-rows-[minmax(11rem,auto)] md:auto-rows-[20rem]">
-      <BentoCard
+    <div className="grid auto-rows-[minmax(11rem,auto)] grid-cols-3 gap-4 md:auto-rows-[18rem]">
+      <BentoTile
         name="Tirages FDJ"
-        description="TRJ, espérance de gain et tests d'uniformité sur l'historique officiel. Chaque rang est calculé avec les vraies combinaisons."
+        description="TRJ, espérance de gain et tests d'uniformité sur l'historique officiel."
         href="/loto"
         cta="Voir les probabilités"
         Icon={Dices}
         className="col-span-3 lg:col-span-2"
-        background={
-          <div className="absolute inset-0 bg-linear-to-br from-loto/10 via-transparent to-transparent">
-            <DotPattern className="opacity-30 text-loto/40" width={18} height={18} cr={0.7} />
-            <div className="absolute bottom-4 left-4 flex flex-col gap-1">
-              <span className="text-label text-loto">TRJ Loto</span>
-              <span className="tnum text-4xl font-bold text-loto">
-                <AnimatedNumber value={trjPercent} decimalPlaces={1} suffix=" %" />
-              </span>
-            </div>
-          </div>
+        accent="loto"
+        highlight={
+          <>
+            <span className="text-label text-loto">TRJ Loto</span>
+            <span className="tnum text-4xl font-bold text-loto">{trjLabel}</span>
+          </>
         }
       />
 
-      <BentoCard
+      <BentoTile
         name="Modèles sport"
         description="Dixon–Coles, Elo NBA et confrontation systématique au marché des cotes."
         href="/sports"
         cta="Ouvrir les modèles"
         Icon={LineChart}
         className="col-span-3 lg:col-span-1"
-        background={
-          <div className="absolute inset-0 bg-linear-to-br from-accent/12 via-transparent to-euro/10">
-            <DotPattern glow className="hidden opacity-40 text-accent/30 dark:block" width={16} height={16} cr={0.6} />
-            <BorderBeam size={120} duration={8} colorFrom="#529cca" colorTo="#a882ff" borderWidth={1} />
-          </div>
-        }
+        accent="accent"
       />
 
-      <FeatureBento
+      <FeatureTile
         name="Test d'uniformité"
         description={
           drawCount
@@ -74,66 +62,117 @@ export function HomeBento({
         Icon={ShieldCheck}
         className="col-span-3 md:col-span-1"
       />
-      <FeatureBento
+      <FeatureTile
         name="Espérance de gain"
-        description={`Rang 1 : 1 chance sur ${rank1Odds.toLocaleString("fr-FR")}.`}
+        description={`Rang 1 : 1 chance sur ${rank1OddsLabel}.`}
         Icon={Calculator}
         className="col-span-3 md:col-span-1"
       />
-      <FeatureBento
+      <FeatureTile
         name="Systèmes réducteurs"
         description="Le plus petit nombre de grilles pour une garantie donnée."
         Icon={BarChart3}
         className="col-span-3 md:col-span-1"
       />
-      <FeatureBento
+      <FeatureTile
         name="Buts attendus"
         description="Intensités d'attaque et défense ajustées dans le temps."
         Icon={TrendingUp}
         className="col-span-3 md:col-span-1"
+        href="/sports"
       />
-      <FeatureBento
+      <FeatureTile
         name="Écart au marché"
         description="Marge retirée, mise Kelly fractionné si value."
         Icon={TrendingUp}
         className="col-span-3 md:col-span-1"
+        href="/sports/scan"
       />
-      <FeatureBento
+      <FeatureTile
         name="Combinaisons Loto"
-        description={`${combinations.toLocaleString("fr-FR")} grilles possibles au rang 1.`}
+        description={`${combinationsLabel} grilles possibles au rang 1.`}
         Icon={Dices}
         className="col-span-3 md:col-span-1"
       />
-    </BentoGrid>
+    </div>
   );
 }
 
-function FeatureBento({
+function BentoTile({
+  name,
+  description,
+  href,
+  cta,
+  Icon,
+  className,
+  accent,
+  highlight,
+}: {
+  name: string;
+  description: string;
+  href: string;
+  cta: string;
+  Icon: LucideIcon;
+  className: string;
+  accent: "loto" | "accent";
+  highlight?: React.ReactNode;
+}) {
+  const bg =
+    accent === "loto"
+      ? "bg-linear-to-br from-loto/10 via-surface to-surface"
+      : "bg-linear-to-br from-accent/10 via-surface to-euro/5";
+
+  return (
+    <article
+      className={cn(
+        "relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface",
+        className,
+      )}
+    >
+      <div className={cn("relative min-h-[5rem] flex-1 p-4", bg)}>
+        {highlight ? <div className="flex flex-col gap-1">{highlight}</div> : null}
+      </div>
+      <div className="flex flex-col gap-2 p-4">
+        <Icon className="size-9 text-accent/80" aria-hidden />
+        <h3 className="text-lg font-semibold text-ink">{name}</h3>
+        <p className="text-sm leading-relaxed text-muted">{description}</p>
+        <Button variant="link" asChild size="sm" className="h-auto justify-start p-0 text-accent">
+          <Link href={href as Route}>
+            {cta}
+            <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
+        </Button>
+      </div>
+    </article>
+  );
+}
+
+function FeatureTile({
   name,
   description,
   Icon,
   className,
+  href = "/loto",
 }: {
   name: string;
   description: string;
   Icon: LucideIcon;
   className: string;
+  href?: string;
 }) {
   return (
-    <BentoCard
-      name={name}
-      description={description}
-      href="/loto"
-      cta="En savoir plus"
-      Icon={Icon}
-      className={className}
-      background={
-        <div className="absolute inset-0 bg-subtle/30 dark:bg-white/2">
-          <DotPattern className="opacity-20 text-ink/20 dark:text-white/15" width={14} height={14} cr={0.5} />
-        </div>
-      }
-    />
+    <article
+      className={cn(
+        "flex flex-col gap-2 rounded-[var(--radius-card)] border border-line bg-surface p-4",
+        className,
+      )}
+    >
+      <Icon className="size-5 text-muted" aria-hidden />
+      <h3 className="text-sm font-semibold text-ink">{name}</h3>
+      <p className="text-sm leading-relaxed text-muted">{description}</p>
+      <Link href={href as Route} className="text-xs font-medium text-accent hover:underline">
+        En savoir plus →
+      </Link>
+    </article>
   );
 }
-
-export { HomeBento as default };

@@ -4,6 +4,7 @@ import { MotionPage } from "@/components/motion/motion-page";
 import { GAMES } from "@/lib/fdj/games";
 import { totalCombinations, rankTable } from "@/lib/loto/probability";
 import { loadDraws } from "@/lib/data";
+import { num, pct } from "@/lib/utils";
 
 export default async function Home() {
   const loto = GAMES.loto;
@@ -20,10 +21,10 @@ export default async function Home() {
         />
 
         <HomeBento
-          trjPercent={loto.trj * 100}
-          combinations={totalCombinations(loto)}
+          trjLabel={pct(loto.trj, 2)}
+          combinationsLabel={num(totalCombinations(loto))}
           drawCount={dataset?.count ?? null}
-          rank1Odds={Math.round(rank1.odds)}
+          rank1OddsLabel={num(Math.round(rank1.odds))}
         />
 
         <p className="rounded-[var(--radius-card)] border border-line bg-subtle px-4 py-3 text-sm leading-relaxed text-muted">
